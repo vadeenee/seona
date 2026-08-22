@@ -1,4 +1,4 @@
-import { AuditCategory, AuditResult, Severity } from "@/lib/types";
+import { AuditCategory, AuditResult, ContentType, InputMode, Severity } from "@/lib/types";
 import { fetchPage } from "./fetch-page";
 import { parseHtml, looksLikeHtml, PageData } from "./parse-html";
 import { analyzeText } from "./text-stats";
@@ -7,7 +7,10 @@ import { buildContentQualityCategory } from "./checks/content-quality";
 import { buildTechnicalCategory } from "./checks/technical";
 import { placeholderCategories } from "./placeholder-categories";
 
-type InputMode = "url" | "html" | "text";
+export interface RunAuditOptions {
+  keyword?: string;
+  contentType?: ContentType;
+}
 
 const URL_PATTERN = /^(https?:\/\/)?[\w-]+(\.[\w-]+)+([/?#]\S*)?$/i;
 
@@ -59,7 +62,7 @@ function buildSummary(categories: AuditCategory[], freeCategories: AuditCategory
   return { headline, summary };
 }
 
-export async function runAudit(input: string): Promise<AuditResult> {
+export async function runAudit(input: string, options: RunAuditOptions = {}): Promise<AuditResult> {
   const mode = detectMode(input);
 
   let pageData: PageData | null = null;
@@ -82,8 +85,8 @@ export async function runAudit(input: string): Promise<AuditResult> {
   const stats = analyzeText(textSource);
 
   const freeCategories: AuditCategory[] = [
-    buildOnPageCategory(pageData),
-    buildContentQualityCategory(stats),
+    buildOnPageCategory(pageData, options.keyword),
+    buildContentQualityCategory(stats, options.contentType),
     buildTechnicalCategory(pageData, loadTimeMs),
   ];
   const categories: AuditCategory[] = [...freeCategories, ...placeholderCategories];
@@ -91,5 +94,13 @@ export async function runAudit(input: string): Promise<AuditResult> {
   const score = computeScore(freeCategories);
   const { headline, summary } = buildSummary(categories, freeCategories, score);
 
-  return { url: displayUrl, score, headline, summary, categories };
+  return {
+    url: displayUrl,
+    score,
+    headline,
+    summary,
+    categories,
+    mode,
+    analyzedText: stats.normalizedText,
+  };
 }

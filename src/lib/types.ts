@@ -5,12 +5,18 @@ export type Tier =
   | "diagnosis-free" // diagnosis visible free, fix requires pro
   | "pro-locked"; // entire category locked on free plan
 
+export interface TextRange {
+  start: number; // character offset into AuditResult.analyzedText
+  end: number;
+}
+
 export interface AuditIssue {
   id: string;
   title: string;
   severity: Severity;
   description?: string;
   fixLabel?: string; // label for the "Fix" / "Unlock fix" action
+  highlights?: TextRange[]; // sentence(s) in analyzedText this issue points at
 }
 
 export interface AuditCategory {
@@ -21,10 +27,15 @@ export interface AuditCategory {
   issues: AuditIssue[];
 }
 
+export type InputMode = "url" | "html" | "text";
+export type ContentType = "general" | "technical";
+
 export interface AuditResult {
   url: string;
   score: number; // 0-100
   headline: string;
   summary: string;
   categories: AuditCategory[];
+  mode: InputMode;
+  analyzedText: string; // whitespace-normalized text the content checks ran on
 }

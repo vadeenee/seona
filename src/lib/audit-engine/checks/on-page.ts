@@ -5,7 +5,7 @@ const TITLE_MAX = 60;
 const META_DESC_MIN = 50;
 const META_DESC_MAX = 160;
 
-export function buildOnPageCategory(pageData: PageData | null): AuditCategory {
+export function buildOnPageCategory(pageData: PageData | null, keyword?: string): AuditCategory {
   if (!pageData) {
     return {
       id: "on-page",
@@ -102,6 +102,37 @@ export function buildOnPageCategory(pageData: PageData | null): AuditCategory {
       title: "H1 present and unique",
       severity: "good",
     });
+  }
+
+  const trimmedKeyword = keyword?.trim();
+  if (trimmedKeyword) {
+    const lowerKeyword = trimmedKeyword.toLowerCase();
+    if (pageData.title) {
+      issues.push(
+        pageData.title.toLowerCase().includes(lowerKeyword)
+          ? { id: "title-keyword-ok", title: "Title tag includes your target keyword", severity: "good" }
+          : {
+              id: "title-keyword-missing",
+              title: "Title tag doesn't include your target keyword",
+              severity: "warning",
+              description: `"${trimmedKeyword}" doesn't appear in the title tag — titles that match the target keyword tend to earn a higher click-through rate.`,
+              fixLabel: "Update title",
+            }
+      );
+    }
+    if (h1s.length === 1) {
+      issues.push(
+        h1s[0].text.toLowerCase().includes(lowerKeyword)
+          ? { id: "h1-keyword-ok", title: "H1 includes your target keyword", severity: "good" }
+          : {
+              id: "h1-keyword-missing",
+              title: "H1 doesn't include your target keyword",
+              severity: "warning",
+              description: `"${trimmedKeyword}" doesn't appear in the H1 — it's one of the strongest on-page signals for what a page is about.`,
+              fixLabel: "Update H1",
+            }
+      );
+    }
   }
 
   return {
