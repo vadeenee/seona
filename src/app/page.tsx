@@ -6,7 +6,7 @@ export default function Home() {
       <div className="w-full max-w-[640px] text-center">
         <div className="flex items-center justify-center gap-2 font-bold text-[17px] mb-8">
           <span className="w-[26px] h-[26px] rounded-[7px] inline-block bg-gradient-to-br from-[var(--brand)] to-[var(--good)]" />
-          Lumen SEO
+          Seona
         </div>
 
         <h1 className="text-[28px] sm:text-[34px] font-bold leading-tight mb-3">
@@ -18,16 +18,16 @@ export default function Home() {
           will actually cite this page — with one-click fixes, not just a scorecard.
         </p>
 
-        <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl p-2 flex items-center gap-2 text-left">
+        <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-left">
           <input
             type="text"
             placeholder="Paste a URL or your content here..."
-            className="flex-1 bg-transparent border-none outline-none px-3 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+            className="w-full sm:flex-1 min-w-0 bg-transparent border-none outline-none px-3 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
             defaultValue="yourblog.com/best-running-shoes"
           />
           <Link
             href="/audit"
-            className="bg-[var(--brand)] text-white rounded-xl px-5 py-2.5 text-sm font-bold whitespace-nowrap"
+            className="bg-[var(--brand)] text-white rounded-xl px-5 py-2.5 text-sm font-bold whitespace-nowrap text-center"
           >
             Run free audit
           </Link>

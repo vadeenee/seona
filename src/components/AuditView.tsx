@@ -39,7 +39,7 @@ export function AuditView({ result }: { result: AuditResult }) {
       <div className="flex items-center justify-between mb-5.5">
         <div className="flex items-center gap-2 font-bold text-[17px]">
           <span className="w-[26px] h-[26px] rounded-[7px] inline-block bg-gradient-to-br from-[var(--brand)] to-[var(--good)]" />
-          Lumen SEO
+          Seona
         </div>
         <div className="flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--surface-2)] rounded-full p-1 text-xs font-semibold">
           <button

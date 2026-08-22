@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lumen SEO",
+  title: "Seona",
   description: "AI-powered SEO and AI-search (AEO) audits with one-click fixes.",
 };
 
