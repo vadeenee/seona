@@ -18,7 +18,13 @@ const dotColor: Record<Severity, string> = {
   good: "var(--good)",
 };
 
-export function AuditView({ result }: { result: AuditResult }) {
+export function AuditView({
+  result,
+  onReanalyze,
+}: {
+  result: AuditResult;
+  onReanalyze?: () => void;
+}) {
   const [plan, setPlan] = useState<"free" | "pro">("free");
   const counts = useMemo(() => severityCounts(result), [result]);
   const lockedCount = useMemo(
@@ -69,10 +75,14 @@ export function AuditView({ result }: { result: AuditResult }) {
             <path d="m21 21-4.3-4.3" />
           </svg>
           <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-            Analyzed: &ldquo;10 Best Running Shoes for Half Marathons&rdquo; — {result.url}
+            Analyzed: {result.url}
           </span>
         </div>
-        <button className="bg-[var(--surface-1)] border border-[var(--border-strong)] text-[var(--text-primary)] px-3.5 py-2 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap">
+        <button
+          onClick={onReanalyze}
+          disabled={!onReanalyze}
+          className="bg-[var(--surface-1)] border border-[var(--border-strong)] text-[var(--text-primary)] px-3.5 py-2 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap disabled:opacity-50 disabled:cursor-default"
+        >
           Re-analyze
         </button>
       </div>

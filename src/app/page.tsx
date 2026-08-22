@@ -1,6 +1,22 @@
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { AUDIT_INPUT_STORAGE_KEY } from "@/lib/audit-input-storage";
+
+const DEFAULT_INPUT = "yourblog.com/best-running-shoes";
 
 export default function Home() {
+  const router = useRouter();
+  const [value, setValue] = useState(DEFAULT_INPUT);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const input = value.trim() || DEFAULT_INPUT;
+    sessionStorage.setItem(AUDIT_INPUT_STORAGE_KEY, input);
+    router.push("/audit");
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-5">
       <div className="w-full max-w-[640px] text-center">
@@ -18,20 +34,24 @@ export default function Home() {
           will actually cite this page — with one-click fixes, not just a scorecard.
         </p>
 
-        <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-left">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-left"
+        >
           <input
             type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
             placeholder="Paste a URL or your content here..."
             className="w-full sm:flex-1 min-w-0 bg-transparent border-none outline-none px-3 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
-            defaultValue="yourblog.com/best-running-shoes"
           />
-          <Link
-            href="/audit"
-            className="bg-[var(--brand)] text-white rounded-xl px-5 py-2.5 text-sm font-bold whitespace-nowrap text-center"
+          <button
+            type="submit"
+            className="bg-[var(--brand)] text-white rounded-xl px-5 py-2.5 text-sm font-bold whitespace-nowrap text-center cursor-pointer"
           >
             Run free audit
-          </Link>
-        </div>
+          </button>
+        </form>
 
         <p className="text-xs text-[var(--text-muted)] mt-4">
           No signup required for your first audit.
