@@ -2,8 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { AuditIssue, AuditResult, ContentType, Severity } from "@/lib/types";
-import { ScoreRing } from "./ScoreRing";
+import { ScoreDisplay } from "./ScoreDisplay";
 import { CategoryCard } from "./CategoryCard";
+import { Header } from "./Header";
 
 const dotColor: Record<Severity, string> = {
   critical: "var(--critical)",
@@ -136,31 +137,29 @@ export function EditorView({
 
   return (
     <div className="min-h-screen" onClick={() => setPopover(null)}>
-      <div className="max-w-[1200px] mx-auto px-5 pt-7 pb-36">
-        <div className="flex items-center justify-between mb-5.5">
-          <div className="flex items-center gap-2 font-bold text-[17px]">
-            <span className="w-[26px] h-[26px] rounded-[7px] inline-block bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)]" />
-            Seona
-          </div>
-          <div className="flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--surface-2)] rounded-full p-1 text-xs font-semibold">
-            <button
-              onClick={() => setPlan("free")}
-              className={`border-none rounded-full px-3.5 py-1.5 cursor-pointer transition-colors duration-200 ${
-                plan === "free" ? "bg-[var(--text-primary)] text-[var(--surface-1)]" : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-              }`}
-            >
-              Free view
-            </button>
-            <button
-              onClick={() => setPlan("pro")}
-              className={`border-none rounded-full px-3.5 py-1.5 cursor-pointer transition-colors duration-200 ${
-                plan === "pro" ? "bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white" : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-              }`}
-            >
-              Pro view
-            </button>
-          </div>
-        </div>
+      <div className="max-w-[1200px] mx-auto px-5 pt-7 pb-36 animate-fade-in">
+        <Header
+          right={
+            <div className="flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--surface-2)] rounded-full p-1 text-xs font-semibold">
+              <button
+                onClick={() => setPlan("free")}
+                className={`border-none rounded-full px-3.5 py-1.5 cursor-pointer transition-colors duration-200 ${
+                  plan === "free" ? "bg-[var(--text-primary)] text-[var(--surface-1)]" : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                Free view
+              </button>
+              <button
+                onClick={() => setPlan("pro")}
+                className={`border-none rounded-full px-3.5 py-1.5 cursor-pointer transition-colors duration-200 ${
+                  plan === "pro" ? "bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white" : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                Pro view
+              </button>
+            </div>
+          }
+        />
 
         <div className="flex gap-6 flex-col lg:flex-row items-start">
           {/* Editor panel */}
@@ -217,9 +216,9 @@ export function EditorView({
 
           {/* Sidebar */}
           <div className="w-full lg:w-[380px] shrink-0 lg:sticky lg:top-7">
-            <div className="flex gap-5 items-center bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-5 py-5 mb-4 flex-wrap shadow-sm">
-              <ScoreRing score={result.score} />
-              <div className="flex-1 min-w-[180px]">
+            <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-5 py-5 mb-4 shadow-sm">
+              <ScoreDisplay score={result.score} />
+              <div className="mt-4">
                 <h1 className="text-[14px] font-bold m-0 mb-1">{result.headline}</h1>
                 <p className="text-[12px] text-[var(--text-secondary)] m-0 mb-3 max-w-[40ch]">{result.summary}</p>
                 <div className="flex gap-2 flex-wrap">

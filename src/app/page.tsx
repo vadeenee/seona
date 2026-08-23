@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { writeStoredAuditInput } from "@/lib/audit-input-storage";
 import { ContentType } from "@/lib/types";
+import { Footer } from "@/components/Footer";
 
 const DEFAULT_INPUT = "yourblog.com/best-running-shoes";
 
@@ -21,8 +22,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-5">
-      <div className="w-full max-w-[640px] text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center px-5 py-16">
+      <div className="w-full max-w-[640px] text-center animate-fade-in">
         <div className="flex items-center justify-center gap-2 font-bold text-[17px] mb-8">
           <span className="w-[26px] h-[26px] rounded-[7px] inline-block bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)]" />
           Seona
@@ -79,6 +80,9 @@ export default function Home() {
         <p className="text-xs text-[var(--text-muted)] mt-4">
           No signup required for your first audit.
         </p>
+      </div>
+      <div className="w-full max-w-[640px]">
+        <Footer />
       </div>
     </div>
   );

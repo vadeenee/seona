@@ -66,7 +66,10 @@ export default function AuditPage() {
   if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center px-5">
-        <div className="text-sm text-[var(--text-secondary)]">Analyzing your page…</div>
+        <div className="flex flex-col items-center gap-3 animate-fade-in">
+          <span className="w-9 h-9 rounded-full border-[3px] border-[var(--gridline)] border-t-[var(--brand)] animate-spin" />
+          <div className="text-sm text-[var(--text-secondary)]">Analyzing your page…</div>
+        </div>
       </div>
     );
   }
@@ -74,11 +77,11 @@ export default function AuditPage() {
   if (status === "error") {
     return (
       <div className="min-h-screen flex items-center justify-center px-5">
-        <div className="max-w-[440px] text-center">
+        <div className="max-w-[440px] text-center animate-fade-in">
           <p className="text-sm text-[var(--text-secondary)] mb-4">{error}</p>
           <Link
             href="/"
-            className="bg-[var(--brand)] text-white rounded-xl px-5 py-2.5 text-sm font-bold inline-block"
+            className="bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white rounded-xl px-5 py-2.5 text-sm font-bold inline-block transition-all duration-200 ease-out hover:shadow-[0_6px_18px_-4px_var(--brand)] hover:-translate-y-px active:translate-y-0"
           >
             Back to start
           </Link>
