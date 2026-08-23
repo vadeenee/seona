@@ -139,7 +139,7 @@ export function EditorView({
       <div className="max-w-[1200px] mx-auto px-5 pt-7 pb-36">
         <div className="flex items-center justify-between mb-5.5">
           <div className="flex items-center gap-2 font-bold text-[17px]">
-            <span className="w-[26px] h-[26px] inline-block bg-[var(--brand)]" />
+            <span className="w-[26px] h-[26px] rounded-[7px] inline-block bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)]" />
             Seona
           </div>
           <div className="flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--surface-2)] rounded-full p-1 text-xs font-semibold">
@@ -164,7 +164,7 @@ export function EditorView({
 
         <div className="flex gap-6 flex-col lg:flex-row items-start">
           {/* Editor panel */}
-          <div className="flex-1 min-w-0 w-full bg-[var(--surface-2)] border border-[var(--border)] overflow-hidden">
+          <div className="flex-1 min-w-0 w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm">
             <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
               <div className="text-[13.5px] text-[var(--text-secondary)] flex items-center gap-2">
                 <span>Editing: Pasted content</span>
@@ -180,7 +180,7 @@ export function EditorView({
               {viewMode === "reviewed" ? (
                 <button
                   onClick={() => setViewMode("editing")}
-                  className="bg-[var(--surface-1)] border border-[var(--border-strong)] text-[var(--text-primary)] px-3.5 py-2 text-xs font-semibold cursor-pointer whitespace-nowrap"
+                  className="bg-[var(--surface-1)] border border-[var(--border-strong)] text-[var(--text-primary)] rounded-lg px-3.5 py-2 text-xs font-semibold cursor-pointer whitespace-nowrap"
                 >
                   Edit text
                 </button>
@@ -188,7 +188,7 @@ export function EditorView({
                 <button
                   onClick={handleAnalyze}
                   disabled={status === "loading"}
-                  className="bg-[var(--brand)] text-white border-none px-3.5 py-2 text-xs font-bold cursor-pointer whitespace-nowrap disabled:opacity-60"
+                  className="bg-[var(--brand)] text-white border-none rounded-lg px-3.5 py-2 text-xs font-bold cursor-pointer whitespace-nowrap disabled:opacity-60"
                 >
                   {status === "loading" ? "Analyzing…" : "Analyze"}
                 </button>
@@ -217,7 +217,7 @@ export function EditorView({
 
           {/* Sidebar */}
           <div className="w-full lg:w-[380px] shrink-0 lg:sticky lg:top-7">
-            <div className="flex gap-5 items-center bg-[var(--surface-2)] border border-[var(--border)] px-5 py-5 mb-4 flex-wrap">
+            <div className="flex gap-5 items-center bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-5 py-5 mb-4 flex-wrap shadow-sm">
               <ScoreRing score={result.score} />
               <div className="flex-1 min-w-[180px]">
                 <h1 className="text-[14px] font-bold m-0 mb-1">{result.headline}</h1>
@@ -226,7 +226,7 @@ export function EditorView({
                   {(["critical", "serious", "warning", "good"] as Severity[]).map((s) => (
                     <div
                       key={s}
-                      className="flex items-center gap-1.5 border border-[var(--border)] px-2 py-1 text-[11px] font-semibold bg-[var(--surface-1)]"
+                      className="flex items-center gap-1.5 border border-[var(--border)] rounded-[8px] px-2 py-1 text-[11px] font-semibold bg-[var(--surface-1)]"
                     >
                       <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dotColor[s] }} />
                       <span>{counts[s]}</span>
@@ -245,7 +245,7 @@ export function EditorView({
 
       {popover && (
         <div
-          className="fixed z-30 bg-[var(--surface-2)] border border-[var(--border-strong)] shadow-lg p-3.5 w-[280px] text-left"
+          className="fixed z-30 bg-[var(--surface-2)] border border-[var(--border-strong)] rounded-xl shadow-lg p-3.5 w-[280px] text-left"
           style={{ left: popover.x, top: popover.y }}
           onClick={(e) => e.stopPropagation()}
         >
