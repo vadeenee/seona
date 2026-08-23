@@ -32,7 +32,7 @@ export function buildOnPageCategory(pageData: PageData | null, keyword?: string)
       title: "Title tag is missing",
       severity: "critical",
       description:
-        "Every page needs a unique <title> tag — it's the headline shown in search results and browser tabs.",
+        "Every page needs a unique <title> tag. It's the headline shown in search results and browser tabs.",
       fixLabel: "Generate title tag",
     });
   } else if (pageData.title.length > TITLE_MAX) {
@@ -93,7 +93,7 @@ export function buildOnPageCategory(pageData: PageData | null, keyword?: string)
       id: "h1-multiple",
       title: `Multiple H1 headings found (${h1s.length})`,
       severity: "warning",
-      description: "Having more than one H1 can dilute the page's topical signal — most pages should have exactly one.",
+      description: "Having more than one H1 can dilute the page's topical signal. Most pages should have exactly one.",
       fixLabel: "Reduce to one H1",
     });
   } else {
@@ -115,7 +115,7 @@ export function buildOnPageCategory(pageData: PageData | null, keyword?: string)
               id: "title-keyword-missing",
               title: "Title tag doesn't include your target keyword",
               severity: "warning",
-              description: `"${trimmedKeyword}" doesn't appear in the title tag — titles that match the target keyword tend to earn a higher click-through rate.`,
+              description: `"${trimmedKeyword}" doesn't appear in the title tag. Titles that match the target keyword tend to earn a higher click-through rate.`,
               fixLabel: "Update title",
             }
       );
@@ -128,7 +128,7 @@ export function buildOnPageCategory(pageData: PageData | null, keyword?: string)
               id: "h1-keyword-missing",
               title: "H1 doesn't include your target keyword",
               severity: "warning",
-              description: `"${trimmedKeyword}" doesn't appear in the H1 — it's one of the strongest on-page signals for what a page is about.`,
+              description: `"${trimmedKeyword}" doesn't appear in the H1. It's one of the strongest on-page signals for what a page is about.`,
               fixLabel: "Update H1",
             }
       );

@@ -8,7 +8,7 @@ export function EvidencePanel({ category }: { category: AuditCategory | undefine
   return (
     <div className="bg-[var(--surface-2)] border border-[var(--border)] px-9 py-9 mb-5.5">
       <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand)] mb-5">
-        {primary.evidence ? "Live evidence — checked just now against Google" : "Search Intent & Topical Coverage"}
+        {primary.evidence ? "Live evidence, checked just now against Google" : "Search Intent & Topical Coverage"}
       </div>
 
       <div className="flex gap-5 items-start">
@@ -40,7 +40,7 @@ export function EvidencePanel({ category }: { category: AuditCategory | undefine
                 >
                   {source.domain}
                 </a>
-                {" — “"}
+                {": “"}
                 {source.title}
                 {"”"}
               </li>

@@ -4,7 +4,7 @@ import { TextStats } from "../text-stats";
 const MIN_WORDS_FOR_READABILITY = 250;
 
 // A technical/B2B audience is expected to tolerate denser writing than a
-// general-audience piece — same Flesch scale, lower bar for what counts as
+// general-audience piece. Same Flesch scale, lower bar for what counts as
 // "good" or "critical".
 const FLESCH_BANDS: Record<ContentType, { good: number; warning: number }> = {
   general: { good: 60, warning: 30 },
@@ -96,7 +96,7 @@ export function buildContentQualityCategory(
       id: "reading-level-critical",
       title: `Reading level is very difficult (score ${stats.fleschScore}/100)`,
       severity: "serious",
-      description: `This reads at a level that will lose most readers${audienceNote} — aim for shorter sentences and plainer words.`,
+      description: `This reads at a level that will lose most readers${audienceNote}. Aim for shorter sentences and plainer words.`,
       fixLabel: "Simplify wording",
     });
   }

@@ -269,7 +269,7 @@ export function EditorView({
             onClick={() => setPlan("pro")}
             className="bg-[var(--brand)] text-white border-none px-4 py-2.5 text-[12.5px] font-bold cursor-pointer whitespace-nowrap"
           >
-            Unlock everything — $19/mo
+            Unlock everything ($19/mo)
           </button>
         </div>
       )}

@@ -9,7 +9,7 @@ import { readStoredAuditInput } from "@/lib/audit-input-storage";
 
 type Status = "loading" | "error" | "ready";
 
-const NO_INPUT_MESSAGE = "No content to audit yet — head back and paste a URL or some content.";
+const NO_INPUT_MESSAGE = "No content to audit yet. Head back and paste a URL or some content.";
 
 async function requestAudit(input: string, keyword?: string, contentType?: ContentType): Promise<AuditResult> {
   const res = await fetch("/api/audit", {
@@ -28,7 +28,7 @@ export default function AuditPage() {
   const [result, setResult] = useState<AuditResult | null>(null);
   const [error, setError] = useState<string | null>(stored ? null : NO_INPUT_MESSAGE);
 
-  // No synchronous setState here — the initial `status`/`error` state already
+  // No synchronous setState here. The initial `status`/`error` state already
   // accounts for the mount case, and the async continuation below only
   // touches state after the fetch settles.
   const fetchAudit = useCallback((input: string) => {

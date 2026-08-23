@@ -9,7 +9,7 @@ const CATEGORY_SHELL = {
 };
 
 // Cheap, defensible signal for "this ranking page is a categorized listicle"
-// — no LLM needed. Real competitor titles are checked against this, not
+// No LLM needed. Real competitor titles are checked against this, not
 // guessed at.
 function looksLikeListicle(title: string): boolean {
   return /^\d+\b/.test(title.trim()) || /\bbest\b/i.test(title) || /\btop\s*\d+\b/i.test(title);
@@ -38,7 +38,7 @@ function unconfigured(keyword: string): AuditCategory {
         id: "intent-unconfigured",
         title: `Competitor research for "${keyword}" isn't connected yet`,
         severity: "warning",
-        description: "This needs a DataForSEO connection on the server — ask whoever runs this site to finish that setup.",
+        description: "This needs a DataForSEO connection on the server. Ask whoever runs this site to finish that setup.",
       },
     ],
   };
@@ -70,7 +70,7 @@ function buildFromResults(keyword: string, ownTitle: string | undefined, results
       id: "intent-no-results",
       title: `No organic results came back for "${keyword}"`,
       severity: "warning",
-      description: "Double check the keyword is realistic — very obscure or malformed queries can return nothing.",
+      description: "Double check the keyword is realistic. Very obscure or malformed queries can return nothing.",
     });
     return { ...CATEGORY_SHELL, issues };
   }
@@ -83,10 +83,10 @@ function buildFromResults(keyword: string, ownTitle: string | undefined, results
   if (listicleMajority && !ownIsListicle) {
     issues.push({
       id: "intent-format-mismatch",
-      title: `${listicleCount} of ${results.length} top-ranking pages for "${keyword}" are "best of" style listicles — yours isn't`,
+      title: `${listicleCount} of ${results.length} top-ranking pages for "${keyword}" use a "best of" format; yours doesn't`,
       severity: "critical",
       description:
-        "Pages structured as a categorized list (best overall, best budget, etc.) are dominating this result — matching that structure is the single highest-leverage change available for this keyword.",
+        "Pages structured as a categorized list (best overall, best budget, etc.) are dominating this result. Matching that structure is the single highest-leverage change available for this keyword.",
       fixLabel: "Restructure as a listicle",
       evidence,
     });

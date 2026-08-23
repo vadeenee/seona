@@ -13,7 +13,7 @@ const severityColor: Record<Severity, string> = {
 const severityLabelClass: Record<Severity, string> = {
   critical: "text-[var(--critical)]",
   serious: "text-[var(--serious)]",
-  warning: "text-[#8a5c12]",
+  warning: "text-[#a4762c]",
   good: "text-[var(--success-text)]",
 };
 

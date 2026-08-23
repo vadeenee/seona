@@ -29,7 +29,7 @@ const SEVERITY_PENALTY: Record<Severity, number> = {
   good: 0,
 };
 
-// Scored from the free-tier categories only — those are the ones the engine
+// Scored from the free-tier categories only. Those are the ones the engine
 // actually computes today. The diagnosis-free/pro-locked categories are still
 // illustrative placeholders (see placeholder-categories.ts) and always carry
 // the same fixed set of issues, so folding them into the score would push
@@ -52,12 +52,12 @@ function buildSummary(categories: AuditCategory[], freeCategories: AuditCategory
   const tone = score >= 85 ? "Great start" : score >= 60 ? "Needs work" : "Needs significant work";
   const headline =
     issueCount === 0
-      ? `Looking good — no issues found across ${categories.length} categories`
-      : `${tone} — ${issueCount} issue${issueCount === 1 ? "" : "s"} found across ${categories.length} categories`;
+      ? `Looking good, no issues found across ${categories.length} categories`
+      : `${tone}: ${issueCount} issue${issueCount === 1 ? "" : "s"} found across ${categories.length} categories`;
 
   const summary =
     criticalCount > 0
-      ? `Fix the ${criticalCount} critical issue${criticalCount === 1 ? "" : "s"} below first — they're the most likely to be hurting rankings today. Unlock the full audit for AI-search readiness and competitive gaps.`
+      ? `Fix the ${criticalCount} critical issue${criticalCount === 1 ? "" : "s"} below first. They're the most likely to be hurting rankings today. Unlock the full audit for AI-search readiness and competitive gaps.`
       : "Your page has strong basics. Unlock the full audit below for search-intent, structure, and AI-search readiness checks.";
 
   return { headline, summary };

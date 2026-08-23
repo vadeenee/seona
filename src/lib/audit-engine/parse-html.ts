@@ -51,7 +51,7 @@ export function parseHtml(html: string): PageData {
   return { title, metaDescription, canonical, headings, images, bodyText };
 }
 
-/** For pasted content that isn't a full document — still worth extracting
+/** For pasted content that isn't a full document, still worth extracting
  * headings/images/text from if the user pasted an HTML fragment. */
 export function looksLikeHtml(input: string): boolean {
   return /<\/?[a-z][\s\S]*>/i.test(input);

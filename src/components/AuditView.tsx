@@ -117,21 +117,21 @@ export function AuditView({
       <EvidencePanel category={intentCategory} />
 
       <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] mt-6.5 mb-2.5 ml-0.5">
-        Free — fix these now
+        Free: fix these now
       </div>
       {freeCategories.map((c) => (
         <CategoryCard key={c.id} category={c} plan={plan} onUpgrade={() => setPlan("pro")} />
       ))}
 
       <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] mt-6.5 mb-2.5 ml-0.5">
-        Flagged for you — unlock the fix with Pro
+        Flagged for you: unlock the fix with Pro
       </div>
       {proDiagnosisCategories.map((c) => (
         <CategoryCard key={c.id} category={c} plan={plan} onUpgrade={() => setPlan("pro")} />
       ))}
 
       <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] mt-6.5 mb-2.5 ml-0.5">
-        Pro-only — your biggest opportunity
+        Pro-only: your biggest opportunity
       </div>
       {proLockedCategories.map((c) => (
         <CategoryCard key={c.id} category={c} plan={plan} onUpgrade={() => setPlan("pro")} />
@@ -146,7 +146,7 @@ export function AuditView({
             onClick={() => setPlan("pro")}
             className="bg-[var(--brand)] text-white border-none px-4 py-2.5 text-[12.5px] font-bold cursor-pointer whitespace-nowrap"
           >
-            Unlock everything — $19/mo
+            Unlock everything ($19/mo)
           </button>
         </div>
       )}

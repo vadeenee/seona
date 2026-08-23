@@ -1,9 +1,9 @@
 import { AuditCategory } from "@/lib/types";
 
 // Content Structure, Internal Linking, AEO, and Schema still need an LLM API
-// key (build priority 4 in CLAUDE.md) — until then they stay illustrative so
+// key (build priority 4 in CLAUDE.md). Until then they stay illustrative so
 // the freemium UI has something to show. Search Intent & Topical Coverage
-// graduated out of this file — it's now real, backed by live DataForSEO SERP
+// graduated out of this file. It's now real, backed by live DataForSEO SERP
 // data (see ../checks/search-intent.ts), when a keyword + API credentials are
 // available.
 export const placeholderCategories: AuditCategory[] = [
@@ -18,7 +18,7 @@ export const placeholderCategories: AuditCategory[] = [
         title: 'No FAQ section, but a "People also ask" box exists',
         severity: "serious",
         description:
-          "Google shows 4 related questions in the SERP for this query — an FAQ block is the highest-probability way to win that space.",
+          "Google shows 4 related questions in the SERP for this query. An FAQ block is the highest-probability way to win that space.",
         fixLabel: "Generate FAQ block",
       },
       {

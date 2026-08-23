@@ -1,6 +1,6 @@
 // Deterministic text analysis: sentence/word counts, a Flesch-style
 // readability score, and heuristics for long sentences and passive voice.
-// No external APIs — this is what backs the free content-quality checks.
+// No external APIs. This is what backs the free content-quality checks.
 
 export interface SentenceInfo {
   text: string;
@@ -31,7 +31,7 @@ const PASSIVE_PARTICIPLE =
 // Splits on sentence-ending punctuation, then re-locates each piece in the
 // normalized text to recover its character offsets (needed to highlight the
 // exact sentence in the editor UI). Pieces appear in order and don't overlap,
-// so a moving-cursor indexOf is enough — no need for a position-aware parser.
+// so a moving-cursor indexOf is enough, no need for a position-aware parser.
 function splitSentences(normalizedText: string): SentenceInfo[] {
   const rawSentences = normalizedText
     .split(/(?<=[.!?])\s+(?=[A-Z0-9])/)

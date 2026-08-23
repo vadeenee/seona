@@ -51,7 +51,7 @@ export async function fetchPage(input: string): Promise<FetchedPage> {
       throw new Error("Timed out fetching the page (10s limit).");
     }
     throw new Error(
-      `Couldn't reach "${url}" — double check the URL is correct and publicly accessible.`
+      `Couldn't reach "${url}". Double check the URL is correct and publicly accessible.`
     );
   } finally {
     clearTimeout(timeout);

@@ -29,12 +29,12 @@ export default function Home() {
         </div>
 
         <h1 className="font-serif text-[30px] sm:text-[38px] font-medium leading-tight mb-3">
-          Grammarly for SEO — and for AI search.
+          Grammarly for SEO and for AI search.
         </h1>
         <p className="text-[15px] text-[var(--text-secondary)] mb-8 max-w-[52ch] mx-auto">
           Paste your content or a URL. Get one plain-English audit covering on-page SEO,
           content quality, search intent, and whether AI Overviews and chat assistants
-          will actually cite this page — with one-click fixes, not just a scorecard.
+          will actually cite this page, with one-click fixes instead of just a scorecard.
         </p>
 
         <form
@@ -62,7 +62,7 @@ export default function Home() {
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              placeholder="Target keyword (optional) — e.g. best running shoes"
+              placeholder="Target keyword (optional, e.g. best running shoes)"
               className="w-full sm:flex-1 min-w-0 bg-transparent border-none outline-none px-2 py-1.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
             />
             <select

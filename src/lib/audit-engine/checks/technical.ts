@@ -82,7 +82,7 @@ export function buildTechnicalCategory(
         id: "load-time-warning",
         title: `Page loaded in ${seconds}s`,
         severity: "warning",
-        description: "Aim for under 2.5s — this is a rough fetch-time measurement, not a full Core Web Vitals audit.",
+        description: "Aim for under 2.5s. This is a rough fetch-time measurement, not a full Core Web Vitals audit.",
       });
     } else {
       issues.push({
