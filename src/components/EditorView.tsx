@@ -238,8 +238,8 @@ export function EditorView({
               </div>
             </div>
 
-            {result.categories.map((c) => (
-              <CategoryCard key={c.id} category={c} plan={plan} onUpgrade={() => setPlan("pro")} />
+            {result.categories.map((c, i) => (
+              <CategoryCard key={c.id} category={c} plan={plan} onUpgrade={() => setPlan("pro")} index={i} />
             ))}
           </div>
         </div>
@@ -247,7 +247,7 @@ export function EditorView({
 
       {popover && (
         <div
-          className="fixed z-30 bg-[var(--surface-2)] border border-[var(--border-strong)] rounded-xl shadow-lg p-3.5 w-[280px] text-left"
+          className="fixed z-30 bg-[var(--surface-2)] border border-[var(--border-strong)] rounded-xl shadow-lg p-3.5 w-[280px] text-left animate-fade-in"
           style={{ left: popover.x, top: popover.y }}
           onClick={(e) => e.stopPropagation()}
         >

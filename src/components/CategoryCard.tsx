@@ -41,16 +41,23 @@ const primaryButtonClass =
   "hover:shadow-[0_4px_14px_-2px_var(--brand)] hover:-translate-y-px active:translate-y-0 active:shadow-[0_1px_2px_rgba(0,0,0,0.08)] " +
   "disabled:opacity-60 disabled:pointer-events-none disabled:translate-y-0 disabled:shadow-none";
 
+const cardClass =
+  "bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm " +
+  "animate-fade-in transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-[3px] hover:shadow-[0_12px_28px_-12px_rgba(10,10,15,0.18)]";
+
 export function CategoryCard({
   category,
   plan,
   onUpgrade,
+  index = 0,
 }: {
   category: AuditCategory;
   plan: "free" | "pro";
   onUpgrade: () => void;
+  index?: number;
 }) {
   const [fixed, setFixed] = useState<Record<string, boolean>>({});
+  const style = { animationDelay: `${Math.min(index, 6) * 60}ms` };
   const badge =
     category.tier === "free" ? (
       <span className="text-[10.5px] font-bold uppercase tracking-wide px-2 py-[3px] rounded-full border border-[var(--border-strong)] text-[var(--text-secondary)]">
@@ -65,7 +72,7 @@ export function CategoryCard({
   if (category.tier === "pro-locked") {
     const unlocked = plan === "pro";
     return (
-      <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm transition-shadow duration-200">
+      <div className={cardClass} style={style}>
         <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
           <div>
             <div className="font-display text-[16px] font-extrabold tracking-tight">{category.title}</div>
@@ -73,53 +80,37 @@ export function CategoryCard({
           </div>
           {badge}
         </div>
-        <div className="relative px-[18px] pb-[22px] pt-1 min-h-[132px]">
-          <div
-            className={
-              unlocked
-                ? ""
-                : "blur-[3px] saturate-[0.7] select-none pointer-events-none opacity-70"
-            }
-          >
-            <div className="px-0">
-              {category.issues.map((issue) => (
-                <div key={issue.id} className="flex gap-2.5 py-3 border-b border-[var(--gridline)] last:border-b-0">
-                  <Dot severity={issue.severity} />
-                  <div className="text-[13px] font-semibold">{issue.title}</div>
-                </div>
-              ))}
+
+        <div className="px-[18px] pt-1">
+          {category.issues.map((issue) => (
+            <div key={issue.id} className="flex gap-2.5 py-3 border-b border-[var(--gridline)] last:border-b-0">
+              <Dot severity={issue.severity} />
+              <span className="text-[13px] font-semibold">{issue.title}</span>
             </div>
-          </div>
-          {!unlocked && (
-            <div
-              className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 text-center px-5"
-              style={{
-                background:
-                  "radial-gradient(ellipse at center, transparent 0%, var(--surface-2) 72%)",
-              }}
-            >
-              <div
-                className="w-11 h-11 rounded-full bg-gradient-to-br from-[var(--brand-100)] to-[var(--surface-1)] text-[var(--brand)] flex items-center justify-center"
-                style={{ boxShadow: "0 0 0 1px var(--border), 0 6px 16px -6px var(--brand)" }}
-              >
+          ))}
+        </div>
+
+        {!unlocked && (
+          <div className="mx-[18px] mb-[18px] mt-3 flex items-center justify-between gap-3 flex-wrap bg-[var(--brand-100)] rounded-xl px-4 py-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[var(--surface-2)] text-[var(--brand)] flex items-center justify-center shrink-0">
                 <LockIcon />
               </div>
-              <h3 className="text-[14.5px] font-bold m-0 tracking-tight">{category.issues.length} issues found</h3>
-              <p className="text-[12.5px] text-[var(--text-secondary)] m-0 max-w-[34ch] leading-relaxed">
-                Unlock the full breakdown and one-click fixes for this category.
-              </p>
-              <button onClick={onUpgrade} className={`${primaryButtonClass} px-[18px] py-[9px] text-[12.5px] mt-0.5`}>
-                Unlock with Pro
-              </button>
+              <span className="text-[12.5px] font-semibold text-[var(--text-primary)]">
+                Unlock the fix for these {category.issues.length} issues
+              </span>
             </div>
-          )}
-        </div>
+            <button onClick={onUpgrade} className={`${primaryButtonClass} px-[16px] py-[8px] text-[12px] shrink-0`}>
+              Unlock with Pro
+            </button>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm transition-shadow duration-200">
+    <div className={cardClass} style={style}>
       <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
         <div>
           <div className="font-display text-[16px] font-extrabold tracking-tight">{category.title}</div>
