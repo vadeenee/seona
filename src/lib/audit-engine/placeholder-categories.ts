@@ -1,34 +1,12 @@
 import { AuditCategory } from "@/lib/types";
 
-// The diagnosis-free and pro-locked tiers need a SERP data API and an LLM API
+// Content Structure, Internal Linking, AEO, and Schema still need an LLM API
 // key (build priority 4 in CLAUDE.md) — until then they stay illustrative so
-// the freemium UI has something to show. Free-tier categories next to these
-// are real, computed by ../checks/*.
+// the freemium UI has something to show. Search Intent & Topical Coverage
+// graduated out of this file — it's now real, backed by live DataForSEO SERP
+// data (see ../checks/search-intent.ts), when a keyword + API credentials are
+// available.
 export const placeholderCategories: AuditCategory[] = [
-  {
-    id: "intent-coverage",
-    title: "Search Intent & Topical Coverage",
-    subtitle: "Vs. the top 10 ranking pages",
-    tier: "diagnosis-free",
-    issues: [
-      {
-        id: "intent-mismatch",
-        title: "Page reads as informational, but intent is commercial",
-        severity: "critical",
-        description:
-          "9 of the top 10 ranking pages for this topic are structured as buying guides with comparisons and prices — yours opens as a narrative story.",
-        fixLabel: "Rewrite intro to match commercial intent",
-      },
-      {
-        id: "missing-subtopics",
-        title: "6 subtopics competitors cover are missing",
-        severity: "serious",
-        description:
-          "Cushioning, durability, half-marathon-specific fit, price tiers, and 2 more are covered by ranking competitors but not here.",
-        fixLabel: "Generate missing sections",
-      },
-    ],
-  },
   {
     id: "structure",
     title: "Content Structure: Tables & FAQs",

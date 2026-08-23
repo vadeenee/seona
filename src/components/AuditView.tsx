@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { AuditResult, Severity } from "@/lib/types";
 import { ScoreRing } from "./ScoreRing";
 import { CategoryCard } from "./CategoryCard";
+import { EvidencePanel } from "./EvidencePanel";
 
 function severityCounts(result: AuditResult) {
   const counts: Record<Severity, number> = { critical: 0, serious: 0, warning: 0, good: 0 };
@@ -36,7 +37,10 @@ export function AuditView({
   );
 
   const freeCategories = result.categories.filter((c) => c.tier === "free");
-  const proDiagnosisCategories = result.categories.filter((c) => c.tier === "diagnosis-free");
+  const intentCategory = result.categories.find((c) => c.id === "intent-coverage");
+  const proDiagnosisCategories = result.categories.filter(
+    (c) => c.tier === "diagnosis-free" && c.id !== "intent-coverage"
+  );
   const proLockedCategories = result.categories.filter((c) => c.tier === "pro-locked");
 
   return (
@@ -44,7 +48,7 @@ export function AuditView({
       {/* Top bar */}
       <div className="flex items-center justify-between mb-5.5">
         <div className="flex items-center gap-2 font-bold text-[17px]">
-          <span className="w-[26px] h-[26px] rounded-[7px] inline-block bg-gradient-to-br from-[var(--brand)] to-[var(--good)]" />
+          <span className="w-[26px] h-[26px] inline-block bg-[var(--brand)]" />
           Seona
         </div>
         <div className="flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--surface-2)] rounded-full p-1 text-xs font-semibold">
@@ -68,7 +72,7 @@ export function AuditView({
       </div>
 
       {/* Input bar */}
-      <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-4 py-3.5 flex items-center gap-3 mb-5.5">
+      <div className="bg-[var(--surface-2)] border border-[var(--border)] px-4 py-3.5 flex items-center gap-3 mb-5.5">
         <div className="flex-1 text-[13.5px] text-[var(--text-secondary)] flex items-center gap-2 overflow-hidden">
           <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="shrink-0 text-[var(--text-muted)]">
             <circle cx="11" cy="11" r="7" />
@@ -81,23 +85,23 @@ export function AuditView({
         <button
           onClick={onReanalyze}
           disabled={!onReanalyze}
-          className="bg-[var(--surface-1)] border border-[var(--border-strong)] text-[var(--text-primary)] px-3.5 py-2 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap disabled:opacity-50 disabled:cursor-default"
+          className="bg-[var(--surface-1)] border border-[var(--border-strong)] text-[var(--text-primary)] px-3.5 py-2 text-xs font-semibold cursor-pointer whitespace-nowrap disabled:opacity-50 disabled:cursor-default"
         >
           Re-analyze
         </button>
       </div>
 
       {/* Hero score */}
-      <div className="flex gap-7 items-center bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-6.5 py-6 mb-5.5 flex-wrap">
+      <div className="flex gap-7 items-center bg-[var(--surface-2)] border border-[var(--border)] px-6.5 py-6 mb-5.5 flex-wrap">
         <ScoreRing score={result.score} />
         <div className="flex-1 min-w-[240px]">
-          <h1 className="text-[15px] font-bold m-0 mb-1">{result.headline}</h1>
+          <h1 className="font-serif text-[19px] font-medium m-0 mb-1.5">{result.headline}</h1>
           <p className="text-[13px] text-[var(--text-secondary)] m-0 mb-3.5 max-w-[46ch]">{result.summary}</p>
           <div className="flex gap-2.5 flex-wrap">
             {(["critical", "serious", "warning", "good"] as Severity[]).map((s) => (
               <div
                 key={s}
-                className="flex items-center gap-1.5 border border-[var(--border)] rounded-[10px] px-2.5 py-1.5 text-xs font-semibold bg-[var(--surface-1)]"
+                className="flex items-center gap-1.5 border border-[var(--border)] px-2.5 py-1.5 text-xs font-semibold bg-[var(--surface-1)]"
               >
                 <span className="w-2 h-2 rounded-full shrink-0" style={{ background: dotColor[s] }} />
                 <span>{counts[s]}</span>
@@ -109,6 +113,8 @@ export function AuditView({
           </div>
         </div>
       </div>
+
+      <EvidencePanel category={intentCategory} />
 
       <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] mt-6.5 mb-2.5 ml-0.5">
         Free — fix these now
@@ -138,7 +144,7 @@ export function AuditView({
           </span>
           <button
             onClick={() => setPlan("pro")}
-            className="bg-[var(--brand)] text-white border-none rounded-lg px-4 py-2.5 text-[12.5px] font-bold cursor-pointer whitespace-nowrap"
+            className="bg-[var(--brand)] text-white border-none px-4 py-2.5 text-[12.5px] font-bold cursor-pointer whitespace-nowrap"
           >
             Unlock everything — $19/mo
           </button>

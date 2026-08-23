@@ -10,6 +10,12 @@ export interface TextRange {
   end: number;
 }
 
+export interface EvidenceSource {
+  domain: string;
+  title: string;
+  url: string;
+}
+
 export interface AuditIssue {
   id: string;
   title: string;
@@ -17,6 +23,7 @@ export interface AuditIssue {
   description?: string;
   fixLabel?: string; // label for the "Fix" / "Unlock fix" action
   highlights?: TextRange[]; // sentence(s) in analyzedText this issue points at
+  evidence?: EvidenceSource[]; // real ranking pages backing this issue, if any
 }
 
 export interface AuditCategory {

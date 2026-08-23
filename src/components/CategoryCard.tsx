@@ -13,7 +13,7 @@ const severityColor: Record<Severity, string> = {
 const severityLabelClass: Record<Severity, string> = {
   critical: "text-[var(--critical)]",
   serious: "text-[var(--serious)]",
-  warning: "text-[#92650a]",
+  warning: "text-[#8a5c12]",
   good: "text-[var(--success-text)]",
 };
 
@@ -59,10 +59,10 @@ export function CategoryCard({
   if (category.tier === "pro-locked") {
     const unlocked = plan === "pro";
     return (
-      <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden">
+      <div className="bg-[var(--surface-2)] border border-[var(--border)] mb-3.5 overflow-hidden">
         <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
           <div>
-            <div className="text-sm font-bold">{category.title}</div>
+            <div className="font-serif text-[15px] font-medium">{category.title}</div>
             <div className="text-[11.5px] text-[var(--text-muted)] mt-px">{category.subtitle}</div>
           </div>
           {badge}
@@ -89,7 +89,7 @@ export function CategoryCard({
               </p>
               <button
                 onClick={onUpgrade}
-                className="bg-[var(--brand)] text-white border-none rounded-lg px-[18px] py-[9px] text-[12.5px] font-bold cursor-pointer mt-0.5"
+                className="bg-[var(--brand)] text-white border-none px-[18px] py-[9px] text-[12.5px] font-bold cursor-pointer mt-0.5"
               >
                 Unlock with Pro
               </button>
@@ -101,10 +101,10 @@ export function CategoryCard({
   }
 
   return (
-    <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden">
+    <div className="bg-[var(--surface-2)] border border-[var(--border)] mb-3.5 overflow-hidden">
       <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
         <div>
-          <div className="text-sm font-bold">{category.title}</div>
+          <div className="font-serif text-[15px] font-medium">{category.title}</div>
           <div className="text-[11.5px] text-[var(--text-muted)] mt-px">{category.subtitle}</div>
         </div>
         {badge}
@@ -129,7 +129,7 @@ export function CategoryCard({
                   <button
                     onClick={() => setFixed((f) => ({ ...f, [issue.id]: true }))}
                     disabled={!!fixed[issue.id]}
-                    className={`border-none rounded-lg px-3.5 py-[7px] text-xs font-bold cursor-pointer text-white ${
+                    className={`border-none px-3.5 py-[7px] text-xs font-bold cursor-pointer text-white ${
                       fixed[issue.id] ? "bg-[var(--good)]" : "bg-[var(--brand)]"
                     }`}
                   >
@@ -147,7 +147,7 @@ export function CategoryCard({
                       </div>
                       <button
                         onClick={onUpgrade}
-                        className="bg-transparent border border-[var(--brand)] text-[var(--brand)] rounded-md px-2.5 py-1.5 text-[11.5px] font-bold cursor-pointer whitespace-nowrap"
+                        className="bg-transparent border border-[var(--brand)] text-[var(--brand)] px-2.5 py-1.5 text-[11.5px] font-bold cursor-pointer whitespace-nowrap"
                       >
                         Unlock fix
                       </button>
@@ -157,7 +157,7 @@ export function CategoryCard({
                       <button
                         onClick={() => setFixed((f) => ({ ...f, [issue.id]: true }))}
                         disabled={!!fixed[issue.id]}
-                        className={`border-none rounded-lg px-3.5 py-[7px] text-xs font-bold cursor-pointer text-white ${
+                        className={`border-none px-3.5 py-[7px] text-xs font-bold cursor-pointer text-white ${
                           fixed[issue.id] ? "bg-[var(--good)]" : "bg-[var(--brand)]"
                         }`}
                       >

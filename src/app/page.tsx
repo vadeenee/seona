@@ -24,11 +24,11 @@ export default function Home() {
     <div className="min-h-screen flex items-center justify-center px-5">
       <div className="w-full max-w-[640px] text-center">
         <div className="flex items-center justify-center gap-2 font-bold text-[17px] mb-8">
-          <span className="w-[26px] h-[26px] rounded-[7px] inline-block bg-gradient-to-br from-[var(--brand)] to-[var(--good)]" />
+          <span className="w-[26px] h-[26px] inline-block bg-[var(--brand)]" />
           Seona
         </div>
 
-        <h1 className="text-[28px] sm:text-[34px] font-bold leading-tight mb-3">
+        <h1 className="font-serif text-[30px] sm:text-[38px] font-medium leading-tight mb-3">
           Grammarly for SEO — and for AI search.
         </h1>
         <p className="text-[15px] text-[var(--text-secondary)] mb-8 max-w-[52ch] mx-auto">
@@ -39,7 +39,7 @@ export default function Home() {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl p-2 flex flex-col text-left gap-2"
+          className="bg-[var(--surface-2)] border border-[var(--border)] p-2 flex flex-col text-left gap-2"
         >
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <input
@@ -51,7 +51,7 @@ export default function Home() {
             />
             <button
               type="submit"
-              className="bg-[var(--brand)] text-white rounded-xl px-5 py-2.5 text-sm font-bold whitespace-nowrap text-center cursor-pointer"
+              className="bg-[var(--brand)] text-white px-5 py-2.5 text-sm font-bold whitespace-nowrap text-center cursor-pointer"
             >
               Run free audit
             </button>
@@ -68,7 +68,7 @@ export default function Home() {
             <select
               value={contentType}
               onChange={(e) => setContentType(e.target.value as ContentType)}
-              className="bg-[var(--surface-1)] border border-[var(--border)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-secondary)] cursor-pointer"
+              className="bg-[var(--surface-1)] border border-[var(--border)] px-2.5 py-1.5 text-xs text-[var(--text-secondary)] cursor-pointer"
             >
               <option value="general">General audience</option>
               <option value="technical">Technical / B2B</option>

@@ -2,64 +2,64 @@
 
 :root {
   color-scheme: light;
-  --surface-1:      #fcfcfb;
-  --surface-2:      #ffffff;
-  --page-plane:     #f9f9f7;
-  --text-primary:   #0b0b0b;
-  --text-secondary: #52514e;
-  --text-muted:     #898781;
-  --gridline:       #e1e0d9;
-  --border:         rgba(11,11,11,0.10);
-  --border-strong:  rgba(11,11,11,0.18);
-  --brand:          #2a78d6;
-  --brand-100:      #cde2fb;
-  --good:           #0ca30c;
-  --warning:        #fab219;
-  --serious:        #ec835a;
-  --critical:       #d03b3b;
-  --success-text:   #006300;
+  --surface-1:      #faf6ee;
+  --surface-2:      #fffdf7;
+  --page-plane:     #faf6ee;
+  --text-primary:   #211d15;
+  --text-secondary: #453f31;
+  --text-muted:     #8a7f68;
+  --gridline:       #ece4d0;
+  --border:         rgba(33,29,21,0.12);
+  --border-strong:  rgba(33,29,21,0.22);
+  --brand:          #8a5a1f;
+  --brand-100:      #f1e4cc;
+  --good:           #3a7d1f;
+  --warning:        #b8790f;
+  --serious:        #c2653a;
+  --critical:       #c23b2b;
+  --success-text:   #2f6519;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --surface-1:      #1a1a19;
-    --surface-2:      #212120;
-    --page-plane:     #0d0d0d;
-    --text-primary:   #ffffff;
-    --text-secondary: #c3c2b7;
-    --text-muted:     #898781;
-    --gridline:       #2c2c2a;
-    --border:         rgba(255,255,255,0.10);
-    --border-strong:  rgba(255,255,255,0.18);
-    --brand:          #3987e5;
-    --brand-100:      #184f95;
-    --good:           #0ca30c;
-    --warning:        #fab219;
-    --serious:        #ec835a;
-    --critical:       #e66767;
-    --success-text:   #0ca30c;
+    --surface-1:      #191510;
+    --surface-2:      #211c15;
+    --page-plane:     #14110c;
+    --text-primary:   #f5eee0;
+    --text-secondary: #cabfa5;
+    --text-muted:     #8a7f68;
+    --gridline:       #322b1f;
+    --border:         rgba(245,238,224,0.10);
+    --border-strong:  rgba(245,238,224,0.18);
+    --brand:          #d8a94f;
+    --brand-100:      #4a3a1a;
+    --good:           #6fbf3d;
+    --warning:        #e6a83c;
+    --serious:        #e08a5f;
+    --critical:       #e6685a;
+    --success-text:   #6fbf3d;
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --surface-1:      #1a1a19;
-  --surface-2:      #212120;
-  --page-plane:     #0d0d0d;
-  --text-primary:   #ffffff;
-  --text-secondary: #c3c2b7;
-  --text-muted:     #898781;
-  --gridline:       #2c2c2a;
-  --border:         rgba(255,255,255,0.10);
-  --border-strong:  rgba(255,255,255,0.18);
-  --brand:          #3987e5;
-  --brand-100:      #184f95;
-  --good:           #0ca30c;
-  --warning:        #fab219;
-  --serious:        #ec835a;
-  --critical:       #e66767;
-  --success-text:   #0ca30c;
+  --surface-1:      #191510;
+  --surface-2:      #211c15;
+  --page-plane:     #14110c;
+  --text-primary:   #f5eee0;
+  --text-secondary: #cabfa5;
+  --text-muted:     #8a7f68;
+  --gridline:       #322b1f;
+  --border:         rgba(245,238,224,0.10);
+  --border-strong:  rgba(245,238,224,0.18);
+  --brand:          #d8a94f;
+  --brand-100:      #4a3a1a;
+  --good:           #6fbf3d;
+  --warning:        #e6a83c;
+  --serious:        #e08a5f;
+  --critical:       #e6685a;
+  --success-text:   #6fbf3d;
 }
 
 @theme inline {
@@ -81,5 +81,9 @@
 body {
   background: var(--page-plane);
   color: var(--text-primary);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.font-serif {
+  font-family: var(--font-serif), Georgia, serif;
 }

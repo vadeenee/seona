@@ -5,6 +5,7 @@ import { analyzeText } from "./text-stats";
 import { buildOnPageCategory } from "./checks/on-page";
 import { buildContentQualityCategory } from "./checks/content-quality";
 import { buildTechnicalCategory } from "./checks/technical";
+import { buildSearchIntentCategory } from "./checks/search-intent";
 import { placeholderCategories } from "./placeholder-categories";
 
 export interface RunAuditOptions {
@@ -89,7 +90,8 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
     buildContentQualityCategory(stats, options.contentType),
     buildTechnicalCategory(pageData, loadTimeMs),
   ];
-  const categories: AuditCategory[] = [...freeCategories, ...placeholderCategories];
+  const searchIntentCategory = await buildSearchIntentCategory(options.keyword, pageData?.title ?? undefined);
+  const categories: AuditCategory[] = [...freeCategories, searchIntentCategory, ...placeholderCategories];
 
   const score = computeScore(freeCategories);
   const { headline, summary } = buildSummary(categories, freeCategories, score);
