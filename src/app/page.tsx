@@ -160,7 +160,7 @@ export default function Home() {
               <div className="w-12 h-12 rounded-full bg-[var(--brand-100)] flex items-center justify-center">
                 <EmptyStateIcon />
               </div>
-              <h2 className="text-[14px] font-bold m-0">Nothing to show yet</h2>
+              <h2 className="font-display text-[16px] font-extrabold tracking-tight m-0">Nothing to show yet</h2>
               <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed m-0">
                 Paste your content or a URL, then hit Analyze to see your SEO and AI-search audit here.
               </p>

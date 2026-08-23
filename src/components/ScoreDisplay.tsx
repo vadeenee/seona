@@ -11,7 +11,7 @@ export function ScoreDisplay({ score }: { score: number }) {
     <div className="shrink-0">
       <div className="flex items-baseline gap-1.5">
         <span
-          className="text-[56px] font-extrabold leading-none tracking-tight tabular-nums"
+          className="font-display text-[60px] font-extrabold leading-none tracking-tight tabular-nums"
           style={{
             backgroundImage: `linear-gradient(135deg, ${color}, var(--brand-2))`,
             WebkitBackgroundClip: "text",

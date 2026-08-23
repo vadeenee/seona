@@ -123,7 +123,7 @@ export function AuditView({
         <div className="w-full lg:w-[340px] shrink-0 lg:sticky lg:top-7">
           <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-6 py-6 shadow-sm">
             <ScoreDisplay score={result.score} />
-            <h1 className="text-[15px] font-bold m-0 mt-4 mb-1.5 leading-snug">{result.headline}</h1>
+            <h1 className="font-display text-[17px] font-extrabold tracking-tight m-0 mt-4 mb-1.5 leading-snug">{result.headline}</h1>
             <p className="text-[12.5px] text-[var(--text-secondary)] m-0 mb-4 leading-relaxed">{result.summary}</p>
             <div className="flex gap-2 flex-wrap">
               {(["critical", "serious", "warning", "good"] as Severity[]).map((s) => (

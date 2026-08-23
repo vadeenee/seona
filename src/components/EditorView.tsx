@@ -222,7 +222,7 @@ export function EditorView({
             <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-5 py-5 mb-4 shadow-sm">
               <ScoreDisplay score={result.score} />
               <div className="mt-4">
-                <h1 className="text-[14px] font-bold m-0 mb-1">{result.headline}</h1>
+                <h1 className="font-display text-[16px] font-extrabold tracking-tight m-0 mb-1">{result.headline}</h1>
                 <p className="text-[12px] text-[var(--text-secondary)] m-0 mb-3 max-w-[40ch]">{result.summary}</p>
                 <div className="flex gap-2 flex-wrap">
                   {(["critical", "serious", "warning", "good"] as Severity[]).map((s) => (

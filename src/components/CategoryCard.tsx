@@ -68,7 +68,7 @@ export function CategoryCard({
       <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm transition-shadow duration-200">
         <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
           <div>
-            <div className="text-[15px] font-bold">{category.title}</div>
+            <div className="font-display text-[16px] font-extrabold tracking-tight">{category.title}</div>
             <div className="text-[11.5px] text-[var(--text-muted)] mt-px">{category.subtitle}</div>
           </div>
           {badge}
@@ -122,7 +122,7 @@ export function CategoryCard({
     <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm transition-shadow duration-200">
       <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
         <div>
-          <div className="text-[15px] font-bold">{category.title}</div>
+          <div className="font-display text-[16px] font-extrabold tracking-tight">{category.title}</div>
           <div className="text-[11.5px] text-[var(--text-muted)] mt-px">{category.subtitle}</div>
         </div>
         {badge}

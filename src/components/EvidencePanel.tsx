@@ -17,7 +17,7 @@ export function EvidencePanel({ category }: { category: AuditCategory | undefine
         </span>
       </div>
 
-      <h3 className="text-[15px] font-bold m-0 mb-1.5 max-w-[52ch]">{primary.title}</h3>
+      <h3 className="font-display text-[17px] font-extrabold tracking-tight m-0 mb-1.5 max-w-[52ch]">{primary.title}</h3>
       {primary.description && (
         <p className="text-[13px] text-[var(--text-secondary)] m-0 leading-relaxed max-w-[56ch]">
           {primary.description}
