@@ -32,7 +32,7 @@ export function EvidencePanel({ category }: { category: AuditCategory | undefine
               href={source.url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 border border-[var(--border)] rounded-full pl-1 pr-3 py-1 text-[12px] font-semibold text-[var(--text-secondary)] bg-[var(--surface-1)] hover:border-[var(--border-strong)]"
+              className="flex items-center gap-2 border border-[var(--border)] rounded-full pl-1 pr-3 py-1 text-[12px] font-semibold text-[var(--text-secondary)] bg-[var(--surface-1)] transition-all duration-200 hover:border-[var(--border-strong)] hover:shadow-sm hover:-translate-y-px"
               title={source.title}
             >
               <span className="w-5 h-5 rounded-full bg-[var(--brand-100)] text-[var(--brand)] text-[10px] font-bold flex items-center justify-center shrink-0">

@@ -39,7 +39,7 @@ export default function Home() {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl p-2 flex flex-col text-left gap-2 shadow-sm"
+          className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl p-2 flex flex-col text-left gap-2 shadow-[0_1px_2px_rgba(10,10,15,0.04),0_12px_28px_-12px_rgba(10,10,15,0.12)]"
         >
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <input
@@ -47,11 +47,11 @@ export default function Home() {
               value={value}
               onChange={(e) => setValue(e.target.value)}
               placeholder="Paste a URL or your content here..."
-              className="w-full sm:flex-1 min-w-0 bg-transparent border-none outline-none px-3 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+              className="w-full sm:flex-1 min-w-0 bg-transparent border-none outline-none rounded-lg px-3 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
             />
             <button
               type="submit"
-              className="bg-[var(--brand)] text-white rounded-xl px-5 py-2.5 text-sm font-bold whitespace-nowrap text-center cursor-pointer"
+              className="bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white rounded-xl px-5 py-2.5 text-sm font-bold whitespace-nowrap text-center cursor-pointer transition-all duration-200 ease-out shadow-[0_1px_2px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_18px_-4px_var(--brand)] hover:-translate-y-px active:translate-y-0"
             >
               Run free audit
             </button>
@@ -63,12 +63,12 @@ export default function Home() {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Target keyword (optional, e.g. best running shoes)"
-              className="w-full sm:flex-1 min-w-0 bg-transparent border-none outline-none px-2 py-1.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+              className="w-full sm:flex-1 min-w-0 bg-transparent border-none outline-none rounded-lg px-2 py-1.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
             />
             <select
               value={contentType}
               onChange={(e) => setContentType(e.target.value as ContentType)}
-              className="bg-[var(--surface-1)] border border-[var(--border)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-secondary)] cursor-pointer"
+              className="bg-[var(--surface-1)] border border-[var(--border)] rounded-lg px-2.5 py-1.5 text-xs text-[var(--text-secondary)] cursor-pointer transition-colors duration-150 hover:border-[var(--border-strong)]"
             >
               <option value="general">General audience</option>
               <option value="technical">Technical / B2B</option>

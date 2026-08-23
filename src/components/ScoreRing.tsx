@@ -23,6 +23,8 @@ export function ScoreRing({ score }: { score: number }) {
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
+          className="transition-[stroke-dashoffset] duration-700 ease-out"
+          style={{ filter: `drop-shadow(0 2px 6px color-mix(in srgb, ${bandColor(score)} 45%, transparent))` }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">

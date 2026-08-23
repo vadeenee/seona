@@ -35,6 +35,12 @@ function LockIcon({ className = "" }: { className?: string }) {
   );
 }
 
+const primaryButtonClass =
+  "bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white border-none rounded-lg font-bold cursor-pointer " +
+  "transition-all duration-200 ease-out shadow-[0_1px_2px_rgba(0,0,0,0.08)] " +
+  "hover:shadow-[0_4px_14px_-2px_var(--brand)] hover:-translate-y-px active:translate-y-0 active:shadow-[0_1px_2px_rgba(0,0,0,0.08)] " +
+  "disabled:opacity-60 disabled:pointer-events-none disabled:translate-y-0 disabled:shadow-none";
+
 export function CategoryCard({
   category,
   plan,
@@ -51,7 +57,7 @@ export function CategoryCard({
         Free
       </span>
     ) : (
-      <span className="text-[10.5px] font-bold uppercase tracking-wide px-2 py-[3px] rounded-full bg-[var(--brand)] border border-[var(--brand)] text-white">
+      <span className="text-[10.5px] font-bold uppercase tracking-wide px-2 py-[3px] rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white">
         Pro
       </span>
     );
@@ -59,7 +65,7 @@ export function CategoryCard({
   if (category.tier === "pro-locked") {
     const unlocked = plan === "pro";
     return (
-      <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm">
+      <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm transition-shadow duration-200">
         <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
           <div>
             <div className="text-[15px] font-bold">{category.title}</div>
@@ -67,8 +73,14 @@ export function CategoryCard({
           </div>
           {badge}
         </div>
-        <div className="relative px-[18px] pb-[18px] pt-1">
-          <div className={unlocked ? "" : "blur-[5px] select-none pointer-events-none opacity-85"}>
+        <div className="relative px-[18px] pb-[22px] pt-1 min-h-[132px]">
+          <div
+            className={
+              unlocked
+                ? ""
+                : "blur-[3px] saturate-[0.7] select-none pointer-events-none opacity-70"
+            }
+          >
             <div className="px-0">
               {category.issues.map((issue) => (
                 <div key={issue.id} className="flex gap-2.5 py-3 border-b border-[var(--gridline)] last:border-b-0">
@@ -79,18 +91,24 @@ export function CategoryCard({
             </div>
           </div>
           {!unlocked && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 text-center px-5 bg-gradient-to-b from-transparent to-[var(--surface-2)] to-55%">
-              <div className="w-10 h-10 rounded-full bg-[var(--brand-100)] text-[var(--brand)] flex items-center justify-center">
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 text-center px-5"
+              style={{
+                background:
+                  "radial-gradient(ellipse at center, transparent 0%, var(--surface-2) 72%)",
+              }}
+            >
+              <div
+                className="w-11 h-11 rounded-full bg-gradient-to-br from-[var(--brand-100)] to-[var(--surface-1)] text-[var(--brand)] flex items-center justify-center"
+                style={{ boxShadow: "0 0 0 1px var(--border), 0 6px 16px -6px var(--brand)" }}
+              >
                 <LockIcon />
               </div>
-              <h3 className="text-sm font-bold m-0">{category.issues.length} issues found</h3>
-              <p className="text-[12.5px] text-[var(--text-secondary)] m-0 max-w-[34ch]">
+              <h3 className="text-[14.5px] font-bold m-0 tracking-tight">{category.issues.length} issues found</h3>
+              <p className="text-[12.5px] text-[var(--text-secondary)] m-0 max-w-[34ch] leading-relaxed">
                 Unlock the full breakdown and one-click fixes for this category.
               </p>
-              <button
-                onClick={onUpgrade}
-                className="bg-[var(--brand)] text-white border-none rounded-lg px-[18px] py-[9px] text-[12.5px] font-bold cursor-pointer mt-0.5"
-              >
+              <button onClick={onUpgrade} className={`${primaryButtonClass} px-[18px] py-[9px] text-[12.5px] mt-0.5`}>
                 Unlock with Pro
               </button>
             </div>
@@ -101,7 +119,7 @@ export function CategoryCard({
   }
 
   return (
-    <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm">
+    <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl mb-3.5 overflow-hidden shadow-sm transition-shadow duration-200">
       <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
         <div>
           <div className="text-[15px] font-bold">{category.title}</div>
@@ -129,8 +147,8 @@ export function CategoryCard({
                   <button
                     onClick={() => setFixed((f) => ({ ...f, [issue.id]: true }))}
                     disabled={!!fixed[issue.id]}
-                    className={`border-none rounded-lg px-3.5 py-[7px] text-xs font-bold cursor-pointer text-white ${
-                      fixed[issue.id] ? "bg-[var(--good)]" : "bg-[var(--brand)]"
+                    className={`${primaryButtonClass} px-3.5 py-[7px] text-xs ${
+                      fixed[issue.id] ? "from-[var(--good)] to-[var(--good)]" : ""
                     }`}
                   >
                     {fixed[issue.id] ? "Fixed ✓" : issue.fixLabel}
@@ -147,7 +165,7 @@ export function CategoryCard({
                       </div>
                       <button
                         onClick={onUpgrade}
-                        className="bg-transparent border border-[var(--brand)] text-[var(--brand)] rounded-md px-2.5 py-1.5 text-[11.5px] font-bold cursor-pointer whitespace-nowrap"
+                        className="bg-transparent border border-[var(--brand)] text-[var(--brand)] rounded-md px-2.5 py-1.5 text-[11.5px] font-bold cursor-pointer whitespace-nowrap transition-all duration-200 ease-out hover:bg-[var(--brand-100)] active:scale-[0.97]"
                       >
                         Unlock fix
                       </button>
@@ -157,8 +175,8 @@ export function CategoryCard({
                       <button
                         onClick={() => setFixed((f) => ({ ...f, [issue.id]: true }))}
                         disabled={!!fixed[issue.id]}
-                        className={`border-none rounded-lg px-3.5 py-[7px] text-xs font-bold cursor-pointer text-white ${
-                          fixed[issue.id] ? "bg-[var(--good)]" : "bg-[var(--brand)]"
+                        className={`${primaryButtonClass} px-3.5 py-[7px] text-xs ${
+                          fixed[issue.id] ? "from-[var(--good)] to-[var(--good)]" : ""
                         }`}
                       >
                         {fixed[issue.id] ? "Fixed ✓" : issue.fixLabel}

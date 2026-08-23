@@ -2,68 +2,29 @@
 
 :root {
   color-scheme: light;
-  --surface-1:      #fdf6f1;
+  --surface-1:      #fafafa;
   --surface-2:      #ffffff;
-  --page-plane:     #fdf6f1;
-  --text-primary:   #3a2a22;
-  --text-secondary: #7a6258;
-  --text-muted:     #b39a8d;
-  --gridline:       #f5e6da;
-  --border:         rgba(58,42,34,0.09);
-  --border-strong:  rgba(58,42,34,0.16);
+  --page-plane:     #fafafa;
+  --text-primary:   #18181a;
+  --text-secondary: #5c5c62;
+  --text-muted:     #9a9aa1;
+  --gridline:       #ececee;
+  --border:         rgba(10,10,15,0.08);
+  --border-strong:  rgba(10,10,15,0.14);
   --brand:          #e8799f;
   --brand-100:      #fce3ec;
   --brand-2:        #f0a24a;
-  --good:           #3fa66a;
-  --warning:        #e28a3a;
-  --serious:        #e06a4e;
-  --critical:       #dd4f6a;
-  --success-text:   #2f8a54;
+  --good:           #2fa360;
+  --warning:        #d98a1e;
+  --serious:        #dd7a4a;
+  --critical:       #dd4568;
+  --success-text:   #23864a;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:where(:not([data-theme="light"])) {
-    color-scheme: dark;
-    --surface-1:      #241a16;
-    --surface-2:      #2c211b;
-    --page-plane:     #18110e;
-    --text-primary:   #f7ece5;
-    --text-secondary: #d3b9ab;
-    --text-muted:     #9c8375;
-    --gridline:       #3a2c24;
-    --border:         rgba(247,236,229,0.09);
-    --border-strong:  rgba(247,236,229,0.16);
-    --brand:          #f0a0bc;
-    --brand-100:      #4a2735;
-    --brand-2:        #f5b872;
-    --good:           #5fc98a;
-    --warning:        #eeab5c;
-    --serious:        #ec8f70;
-    --critical:       #ef8098;
-    --success-text:   #5fc98a;
-  }
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --surface-1:      #241a16;
-  --surface-2:      #2c211b;
-  --page-plane:     #18110e;
-  --text-primary:   #f7ece5;
-  --text-secondary: #d3b9ab;
-  --text-muted:     #9c8375;
-  --gridline:       #3a2c24;
-  --border:         rgba(247,236,229,0.09);
-  --border-strong:  rgba(247,236,229,0.16);
-  --brand:          #f0a0bc;
-  --brand-100:      #4a2735;
-  --brand-2:        #f5b872;
-  --good:           #5fc98a;
-  --warning:        #eeab5c;
-  --serious:        #ec8f70;
-  --critical:       #ef8098;
-  --success-text:   #5fc98a;
-}
+/* Light-only for now, on purpose: this app doesn't yet have a theme
+   toggle, so following the visitor's OS dark-mode preference produced
+   an unintended, unpolished dark render. Reintroduce dark mode behind
+   an explicit toggle when it gets real design attention. */
 
 @theme inline {
   --color-surface-1: var(--surface-1);
@@ -86,4 +47,13 @@ body {
   background: var(--page-plane);
   color: var(--text-primary);
   font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
 }

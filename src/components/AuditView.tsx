@@ -54,16 +54,16 @@ export function AuditView({
         <div className="flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--surface-2)] rounded-full p-1 text-xs font-semibold">
           <button
             onClick={() => setPlan("free")}
-            className={`border-none rounded-full px-3.5 py-1.5 cursor-pointer ${
-              plan === "free" ? "bg-[var(--text-primary)] text-[var(--surface-1)]" : "bg-transparent text-[var(--text-secondary)]"
+            className={`border-none rounded-full px-3.5 py-1.5 cursor-pointer transition-colors duration-200 ${
+              plan === "free" ? "bg-[var(--text-primary)] text-[var(--surface-1)]" : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             Free view
           </button>
           <button
             onClick={() => setPlan("pro")}
-            className={`border-none rounded-full px-3.5 py-1.5 cursor-pointer ${
-              plan === "pro" ? "bg-[var(--brand)] text-white" : "bg-transparent text-[var(--text-secondary)]"
+            className={`border-none rounded-full px-3.5 py-1.5 cursor-pointer transition-colors duration-200 ${
+              plan === "pro" ? "bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white" : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             Pro view
@@ -85,7 +85,7 @@ export function AuditView({
         <button
           onClick={onReanalyze}
           disabled={!onReanalyze}
-          className="bg-[var(--surface-1)] border border-[var(--border-strong)] text-[var(--text-primary)] rounded-lg px-3.5 py-2 text-xs font-semibold cursor-pointer whitespace-nowrap disabled:opacity-50 disabled:cursor-default"
+          className="bg-[var(--surface-1)] border border-[var(--border-strong)] text-[var(--text-primary)] rounded-lg px-3.5 py-2 text-xs font-semibold cursor-pointer whitespace-nowrap transition-all duration-200 hover:border-[var(--border-strong)] hover:shadow-sm active:scale-[0.98] disabled:opacity-50 disabled:cursor-default disabled:active:scale-100"
         >
           Re-analyze
         </button>
@@ -138,13 +138,13 @@ export function AuditView({
       ))}
 
       {plan === "free" && (
-        <div className="fixed left-0 right-0 bottom-0 flex items-center justify-center gap-4 bg-[var(--text-primary)] text-[var(--surface-1)] px-5 py-3.5 text-[13px] z-20 flex-wrap">
+        <div className="fixed left-0 right-0 bottom-0 flex items-center justify-center gap-4 bg-[var(--text-primary)] text-[var(--surface-1)] px-5 py-3.5 text-[13px] z-20 flex-wrap shadow-[0_-8px_24px_rgba(0,0,0,0.12)]">
           <span>
             <strong>{lockedCount} fixes</strong> are ready to apply with Pro.
           </span>
           <button
             onClick={() => setPlan("pro")}
-            className="bg-[var(--brand)] text-white border-none rounded-lg px-4 py-2.5 text-[12.5px] font-bold cursor-pointer whitespace-nowrap"
+            className="bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white border-none rounded-lg px-4 py-2.5 text-[12.5px] font-bold cursor-pointer whitespace-nowrap transition-all duration-200 ease-out hover:shadow-[0_4px_14px_-2px_var(--brand)] hover:-translate-y-px active:translate-y-0"
           >
             Unlock everything ($19/mo)
           </button>
