@@ -63,11 +63,13 @@ export function EditorView({
   keyword,
   contentType,
   onAnalyze,
+  onHome,
 }: {
   initialResult: AuditResult;
   keyword?: string;
   contentType: ContentType;
   onAnalyze: (text: string) => Promise<AuditResult>;
+  onHome?: () => void;
 }) {
   const [result, setResult] = useState(initialResult);
   const [text, setText] = useState(initialResult.analyzedText);
@@ -139,6 +141,7 @@ export function EditorView({
     <div className="min-h-screen" onClick={() => setPopover(null)}>
       <div className="max-w-[1200px] mx-auto px-5 pt-7 pb-36 animate-fade-in">
         <Header
+          onLogoClick={onHome}
           right={
             <div className="flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--surface-2)] rounded-full p-1 text-xs font-semibold">
               <button

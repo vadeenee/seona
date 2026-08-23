@@ -23,9 +23,11 @@ const dotColor: Record<Severity, string> = {
 export function AuditView({
   result,
   onReanalyze,
+  onHome,
 }: {
   result: AuditResult;
   onReanalyze?: () => void;
+  onHome?: () => void;
 }) {
   const [plan, setPlan] = useState<"free" | "pro">("free");
   const counts = useMemo(() => severityCounts(result), [result]);
@@ -47,6 +49,7 @@ export function AuditView({
   return (
     <div className="max-w-[1200px] mx-auto px-5 pt-7 pb-36 animate-fade-in">
       <Header
+        onLogoClick={onHome}
         right={
           <div className="flex items-center gap-2 border border-[var(--border-strong)] bg-[var(--surface-2)] rounded-full p-1 text-xs font-semibold">
             <button
