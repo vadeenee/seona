@@ -118,6 +118,7 @@ export function EditorView({
   // — editable, same as pasted text — so the header should say what was
   // actually analyzed instead of a generic "Editing" label.
   const sourceLabel = result.mode === "text" ? "Editing: Pasted content" : `Analyzed: ${result.url}`;
+  const crawled = result.mode !== "text";
   const lockedCount = useMemo(
     () =>
       result.categories
@@ -286,8 +287,11 @@ export function EditorView({
                 value={keyword}
                 onChange={(e) => onKeywordChange(e.target.value)}
                 placeholder="e.g. best running shoes"
-                className={`${fieldClass} mb-3`}
+                className={`${fieldClass} mb-1`}
               />
+              <p className="text-[10.5px] text-[var(--warning)] mt-0 mb-2 min-h-[13px]">
+                {crawled && !keyword && "Couldn’t find a clear topic on this page to suggest one — type your target keyword."}
+              </p>
 
               <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
                 SEO title
@@ -297,8 +301,11 @@ export function EditorView({
                 value={seoTitle}
                 onChange={(e) => onSeoTitleChange(e.target.value)}
                 placeholder="What should show up as the headline in Google?"
-                className={`${fieldClass} mb-3`}
+                className={`${fieldClass} mb-1`}
               />
+              <p className="text-[10.5px] text-[var(--warning)] mt-0 mb-2 min-h-[13px]">
+                {crawled && !seoTitle && "No <title> tag found on this page — type one to get started."}
+              </p>
 
               <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
                 Meta description
@@ -308,10 +315,17 @@ export function EditorView({
                 onChange={(e) => onSeoMetaDescriptionChange(e.target.value)}
                 placeholder="The snippet Google shows under your title"
                 rows={3}
-                className={`${fieldClass} mb-4 resize-none`}
+                className={`${fieldClass} mb-1 resize-none`}
               />
+              <p className="text-[10.5px] text-[var(--warning)] mt-0 mb-3 min-h-[13px]">
+                {crawled && !seoMetaDescription && "No meta description found on this page — type one to get started."}
+              </p>
 
-              <SerpPreview title={seoTitle} description={seoMetaDescription} displayUrl="yourblog.com › post-title" />
+              <SerpPreview
+                title={seoTitle}
+                description={seoMetaDescription}
+                displayUrl={crawled ? result.url : "yourblog.com › post-title"}
+              />
               <p className="text-[10.5px] text-[var(--text-muted)] mt-2 mb-0">
                 Edit these, then hit Analyze to recheck.
               </p>

@@ -29,8 +29,16 @@ export async function fetchPage(input: string): Promise<FetchedPage> {
       signal: controller.signal,
       redirect: "follow",
       headers: {
-        "User-Agent": "SeonaAuditBot/0.1 (+https://seona-khaki.vercel.app)",
-        Accept: "text/html,application/xhtml+xml",
+        // A self-identifying bot string ("SeonaAuditBot/0.1") gets a
+        // different response from a lot of real-world sites — CDNs and bot
+        // -management layers commonly serve an unrecognized bot a stripped
+        // -down or cached "safe" page instead of the real one, silently
+        // breaking title/meta/content extraction. Presenting as a normal
+        // Chrome browser instead gets the same HTML a human visitor sees.
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
       },
     });
     const loadTimeMs = Date.now() - start;

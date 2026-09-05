@@ -103,7 +103,10 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
   // — it only fires once the user has typed or explicitly accepted a
   // keyword, so a page load never silently burns a SERP API call.
   const typedKeyword = options.keyword?.trim() || undefined;
-  const suggestedKeyword = !typedKeyword ? suggestKeywordFromTitle(pageData?.title) ?? undefined : undefined;
+  const h1Text = pageData?.headings.find((h) => h.level === 1)?.text;
+  const suggestedKeyword = !typedKeyword
+    ? suggestKeywordFromTitle(pageData?.title) ?? suggestKeywordFromTitle(h1Text) ?? undefined
+    : undefined;
   const effectiveKeyword = typedKeyword ?? suggestedKeyword;
 
   const manualMeta: ManualMeta = { title: options.seoTitle, metaDescription: options.seoMetaDescription };

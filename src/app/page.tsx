@@ -78,6 +78,15 @@ export default function Home() {
           setResult(r);
           setLastInput(input);
           setStatus("ready");
+          // The server already resolved manual-vs-extracted precedence for
+          // us (a typed value comes back unchanged; an empty field comes
+          // back as whatever was extracted/suggested from a real page) — so
+          // it's always correct to reflect its answer back into the
+          // editable fields. Without this, a URL audit's real title/meta/
+          // keyword gets used for scoring but never shown to edit.
+          setKeyword(r.keyword ?? "");
+          setSeoTitle(r.seoTitle ?? "");
+          setSeoMetaDescription(r.seoMetaDescription ?? "");
         })
         .catch((err: unknown) => {
           setError(err instanceof Error ? err.message : "Couldn't analyze that input.");
@@ -105,7 +114,15 @@ export default function Home() {
     (text: string) =>
       requestAudit(
         result?.mode === "text" ? buildRequest(text) : { ...buildRequest(lastInput), bodyText: text }
-      ),
+      ).then((r) => {
+        // Same resync as the initial analysis — keeps the fields honest if
+        // e.g. the keyword was cleared and rechecked, prompting a fresh
+        // suggestion from the title instead.
+        setKeyword(r.keyword ?? "");
+        setSeoTitle(r.seoTitle ?? "");
+        setSeoMetaDescription(r.seoMetaDescription ?? "");
+        return r;
+      }),
     [buildRequest, lastInput, result]
   );
 
