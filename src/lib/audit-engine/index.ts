@@ -87,7 +87,7 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
 
   const freeCategories: AuditCategory[] = [
     buildOnPageCategory(pageData, options.keyword),
-    buildContentQualityCategory(stats, options.contentType),
+    buildContentQualityCategory(stats, options.contentType, options.keyword),
     buildTechnicalCategory(pageData, loadTimeMs),
   ];
   const searchIntentCategory = await buildSearchIntentCategory(options.keyword, pageData?.title ?? undefined);

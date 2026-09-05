@@ -11,15 +11,22 @@ const FLESCH_BANDS: Record<ContentType, { good: number; warning: number }> = {
   technical: { good: 40, warning: 20 },
 };
 
-function toHighlights(sentences: { start: number; end: number }[]): TextRange[] {
-  return sentences.map((s) => ({ start: s.start, end: s.end }));
+const MAX_HIGHLIGHTS = 25;
+
+function toHighlights(spans: { start: number; end: number }[]): TextRange[] {
+  return spans.slice(0, MAX_HIGHLIGHTS).map((s) => ({ start: s.start, end: s.end }));
 }
 
 export function buildContentQualityCategory(
   stats: TextStats,
-  contentType: ContentType = "general"
+  contentType: ContentType = "general",
+  keyword?: string
 ): AuditCategory {
   const issues: AuditIssue[] = [];
+  // Repeating the target keyword is good for SEO, not a writing flaw — don't
+  // flag the keyword's own words as "overused" here.
+  const keywordWords = new Set((keyword ?? "").toLowerCase().split(/\s+/).filter(Boolean));
+  const repeatedWords = stats.repeatedWords.filter((g) => !keywordWords.has(g.word));
 
   if (stats.wordCount < MIN_WORDS_FOR_READABILITY) {
     issues.push({
@@ -98,6 +105,60 @@ export function buildContentQualityCategory(
       severity: "serious",
       description: `This reads at a level that will lose most readers${audienceNote}. Aim for shorter sentences and plainer words.`,
       fixLabel: "Simplify wording",
+    });
+  }
+
+  const adverbRatio = stats.wordCount > 0 ? stats.adverbs.length / stats.wordCount : 0;
+  if (adverbRatio > 0.03) {
+    issues.push({
+      id: "adverb-overuse",
+      title: `${stats.adverbs.length} adverbs found (${Math.round(adverbRatio * 100)}% of words)`,
+      severity: adverbRatio > 0.06 ? "serious" : "warning",
+      description: "Above roughly 3% of words, adverbs usually mean a stronger verb is available instead of propping up a weak one.",
+      fixLabel: "Cut unnecessary adverbs",
+      highlights: toHighlights(stats.adverbs),
+    });
+  } else {
+    issues.push({
+      id: "adverb-overuse-ok",
+      title: "Adverb use is reasonable",
+      severity: "good",
+    });
+  }
+
+  if (stats.fillerWords.length > 0) {
+    issues.push({
+      id: "filler-words",
+      title: `${stats.fillerWords.length} filler word${stats.fillerWords.length === 1 ? "" : "s"} found`,
+      severity: stats.fillerWords.length >= 5 ? "serious" : "warning",
+      description: 'Words like "very", "really", and "just" rarely add meaning. Cutting them makes writing read more direct and confident.',
+      fixLabel: "Remove filler words",
+      highlights: toHighlights(stats.fillerWords),
+    });
+  } else {
+    issues.push({
+      id: "filler-words-ok",
+      title: "No filler words found",
+      severity: "good",
+    });
+  }
+
+  if (repeatedWords.length > 0) {
+    const examples = repeatedWords.slice(0, 4).map((g) => `"${g.word}"`).join(", ");
+    const more = repeatedWords.length > 4 ? `, +${repeatedWords.length - 4} more` : "";
+    issues.push({
+      id: "repeated-words",
+      title: `${repeatedWords.length} word${repeatedWords.length === 1 ? "" : "s"} repeated too often close together`,
+      severity: repeatedWords.length >= 6 ? "serious" : "warning",
+      description: `${examples}${more}. The same word clustering within a sentence or two reads as repetitive — try a synonym or restructure the sentence.`,
+      fixLabel: "Vary word choice",
+      highlights: toHighlights(repeatedWords.flatMap((g) => g.occurrences)),
+    });
+  } else {
+    issues.push({
+      id: "repeated-words-ok",
+      title: "No close word repetition found",
+      severity: "good",
     });
   }
 

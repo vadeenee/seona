@@ -133,6 +133,63 @@ export function buildOnPageCategory(pageData: PageData | null, keyword?: string)
             }
       );
     }
+    if (pageData.metaDescription) {
+      issues.push(
+        pageData.metaDescription.toLowerCase().includes(lowerKeyword)
+          ? { id: "meta-desc-keyword-ok", title: "Meta description includes your target keyword", severity: "good" }
+          : {
+              id: "meta-desc-keyword-missing",
+              title: "Meta description doesn't include your target keyword",
+              severity: "warning",
+              description: `"${trimmedKeyword}" doesn't appear in the meta description. Working it in naturally reinforces relevance and often gets bolded in search results.`,
+              fixLabel: "Rewrite meta description",
+            }
+      );
+    }
+  }
+
+  const bodyWordCount = pageData.bodyText.split(/\s+/).filter(Boolean).length;
+  const h2s = pageData.headings.filter((h) => h.level === 2);
+  if (bodyWordCount > 150) {
+    if (h2s.length === 0) {
+      issues.push({
+        id: "subheadings-missing",
+        title: "No subheadings (H2s) break up the content",
+        severity: "warning",
+        description:
+          "A page this long with no H2 sections reads as one dense block. Subheadings make content scannable and easier for AI systems to extract specific sections from.",
+        fixLabel: "Add section headings",
+      });
+    } else {
+      issues.push({
+        id: "subheadings-ok",
+        title: `Content is organized into ${h2s.length} section${h2s.length === 1 ? "" : "s"} with H2 headings`,
+        severity: "good",
+      });
+    }
+  }
+
+  const og = pageData.openGraph;
+  const missingOg = [
+    !og.title && "og:title",
+    !og.description && "og:description",
+    !og.image && "og:image",
+  ].filter((v): v is string => Boolean(v));
+  if (missingOg.length > 0) {
+    issues.push({
+      id: "og-tags-missing",
+      title: `Missing Open Graph tags: ${missingOg.join(", ")}`,
+      severity: "warning",
+      description:
+        "Open Graph tags control how this page looks when shared on social media, Slack, or messaging apps. Without them, shares show a blank or generic preview.",
+      fixLabel: "Generate Open Graph tags",
+    });
+  } else {
+    issues.push({
+      id: "og-tags-ok",
+      title: "Open Graph tags are present",
+      severity: "good",
+    });
   }
 
   return {

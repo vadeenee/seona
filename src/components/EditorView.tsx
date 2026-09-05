@@ -28,27 +28,45 @@ interface Mark {
   issues: Pick<AuditIssue, "title" | "description" | "fixLabel">[];
 }
 
+// Highlights come at different granularities — whole-sentence spans (long
+// sentences, passive voice) and single-word spans nested inside them
+// (adverbs, filler words, repeats) — so they routinely overlap. Rendering
+// each raw range as its own <mark> would slice the same characters into the
+// output twice wherever a word-level range sits inside a sentence-level one.
+// Sorting by start and merging anything that overlaps or touches the
+// previous mark keeps the final set non-overlapping, so the render pass can
+// walk it with a single moving cursor.
 function buildMarks(result: AuditResult): Mark[] {
   const contentQuality = result.categories.find((c) => c.id === "content-quality");
   if (!contentQuality) return [];
 
-  const byRange = new Map<string, Mark>();
+  interface RawMark {
+    start: number;
+    end: number;
+    severity: Severity;
+    issue: Pick<AuditIssue, "title" | "description" | "fixLabel">;
+  }
+  const raw: RawMark[] = [];
   for (const issue of contentQuality.issues) {
     if (!issue.highlights) continue;
     for (const range of issue.highlights) {
-      const key = `${range.start}-${range.end}`;
-      const existing = byRange.get(key);
-      if (existing) {
-        existing.issues.push(issue);
-        if (SEVERITY_RANK[issue.severity] > SEVERITY_RANK[existing.severity]) {
-          existing.severity = issue.severity;
-        }
-      } else {
-        byRange.set(key, { start: range.start, end: range.end, severity: issue.severity, issues: [issue] });
-      }
+      raw.push({ start: range.start, end: range.end, severity: issue.severity, issue });
     }
   }
-  return [...byRange.values()].sort((a, b) => a.start - b.start);
+  raw.sort((a, b) => a.start - b.start || a.end - b.end);
+
+  const merged: Mark[] = [];
+  for (const r of raw) {
+    const last = merged[merged.length - 1];
+    if (last && r.start <= last.end) {
+      last.end = Math.max(last.end, r.end);
+      if (SEVERITY_RANK[r.severity] > SEVERITY_RANK[last.severity]) last.severity = r.severity;
+      if (!last.issues.some((i) => i.title === r.issue.title)) last.issues.push(r.issue);
+    } else {
+      merged.push({ start: r.start, end: r.end, severity: r.severity, issues: [r.issue] });
+    }
+  }
+  return merged;
 }
 
 interface PopoverState {

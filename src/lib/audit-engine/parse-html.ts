@@ -10,6 +10,12 @@ export interface ImageInfo {
   alt: string | null;
 }
 
+export interface OpenGraphData {
+  title: string | null;
+  description: string | null;
+  image: string | null;
+}
+
 export interface PageData {
   title: string | null;
   metaDescription: string | null;
@@ -17,6 +23,7 @@ export interface PageData {
   headings: HeadingInfo[];
   images: ImageInfo[];
   bodyText: string;
+  openGraph: OpenGraphData;
 }
 
 // Tags whose content is never meant to be read as prose.
@@ -48,7 +55,13 @@ export function parseHtml(html: string): PageData {
   bodyClone.find(NON_CONTENT_SELECTOR).remove();
   const bodyText = bodyClone.text().replace(/\s+/g, " ").trim();
 
-  return { title, metaDescription, canonical, headings, images, bodyText };
+  const openGraph: OpenGraphData = {
+    title: $('meta[property="og:title"]').attr("content")?.trim() || null,
+    description: $('meta[property="og:description"]').attr("content")?.trim() || null,
+    image: $('meta[property="og:image"]').attr("content")?.trim() || null,
+  };
+
+  return { title, metaDescription, canonical, headings, images, bodyText, openGraph };
 }
 
 /** For pasted content that isn't a full document, still worth extracting
