@@ -53,7 +53,6 @@ export function buildContentQualityCategory(
       severity: stats.longSentences.length >= 3 ? "serious" : "warning",
       description:
         "Long sentences slow readers down and are harder for AI systems to extract a clean answer from.",
-      fixLabel: "Simplify sentences",
       highlights: toHighlights(stats.longSentences),
     });
   } else {
@@ -71,7 +70,6 @@ export function buildContentQualityCategory(
       title: `Passive voice in ${passivePercent}% of sentences`,
       severity: stats.passiveRatio > 0.25 ? "serious" : "warning",
       description: "Above the 10% threshold that tends to read as stiff or evasive.",
-      fixLabel: "Rewrite in active voice",
       highlights: toHighlights(stats.passiveSentences),
     });
   } else {
@@ -96,7 +94,6 @@ export function buildContentQualityCategory(
       title: `Reading level is fairly difficult (score ${stats.fleschScore}/100)`,
       severity: "warning",
       description: `A Flesch score below ${band.good}${audienceNote} means shorter sentences and simpler words would help most readers.`,
-      fixLabel: "Simplify wording",
     });
   } else {
     issues.push({
@@ -104,7 +101,6 @@ export function buildContentQualityCategory(
       title: `Reading level is very difficult (score ${stats.fleschScore}/100)`,
       severity: "serious",
       description: `This reads at a level that will lose most readers${audienceNote}. Aim for shorter sentences and plainer words.`,
-      fixLabel: "Simplify wording",
     });
   }
 
@@ -115,7 +111,6 @@ export function buildContentQualityCategory(
       title: `${stats.adverbs.length} adverbs found (${Math.round(adverbRatio * 100)}% of words)`,
       severity: adverbRatio > 0.06 ? "serious" : "warning",
       description: "Above roughly 3% of words, adverbs usually mean a stronger verb is available instead of propping up a weak one.",
-      fixLabel: "Cut unnecessary adverbs",
       highlights: toHighlights(stats.adverbs),
     });
   } else {
@@ -132,7 +127,6 @@ export function buildContentQualityCategory(
       title: `${stats.fillerWords.length} filler word${stats.fillerWords.length === 1 ? "" : "s"} found`,
       severity: stats.fillerWords.length >= 5 ? "serious" : "warning",
       description: 'Words like "very", "really", and "just" rarely add meaning. Cutting them makes writing read more direct and confident.',
-      fixLabel: "Remove filler words",
       highlights: toHighlights(stats.fillerWords),
     });
   } else {
@@ -151,7 +145,6 @@ export function buildContentQualityCategory(
       title: `${repeatedWords.length} word${repeatedWords.length === 1 ? "" : "s"} repeated too often close together`,
       severity: repeatedWords.length >= 6 ? "serious" : "warning",
       description: `${examples}${more}. The same word clustering within a sentence or two reads as repetitive — try a synonym or restructure the sentence.`,
-      fixLabel: "Vary word choice",
       highlights: toHighlights(repeatedWords.flatMap((g) => g.occurrences)),
     });
   } else {

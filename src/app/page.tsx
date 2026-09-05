@@ -94,6 +94,31 @@ export default function Home() {
 
   const editorAnalyze = useCallback((text: string) => requestAudit(buildRequest(text)), [buildRequest]);
 
+  // Distinct from the composer's own SEO fields (which usually stay empty in
+  // URL mode) — this lets the AuditView's own snippet editor override just
+  // the title/description for a real page and recheck, without touching
+  // whatever's in the composer.
+  const recheckMeta = useCallback(
+    (seoTitleOverride: string, seoMetaDescriptionOverride: string) => {
+      setStatus("loading");
+      setError(null);
+      requestAudit({
+        ...buildRequest(lastInput),
+        seoTitle: seoTitleOverride || undefined,
+        seoMetaDescription: seoMetaDescriptionOverride || undefined,
+      })
+        .then((r) => {
+          setResult(r);
+          setStatus("ready");
+        })
+        .catch((err: unknown) => {
+          setError(err instanceof Error ? err.message : "Couldn't analyze that input.");
+          setStatus("error");
+        });
+    },
+    [buildRequest, lastInput]
+  );
+
   const reset = useCallback(() => {
     setStatus("idle");
     setResult(null);
@@ -110,12 +135,18 @@ export default function Home() {
           initialResult={result}
           keyword={keyword.trim() || undefined}
           contentType={contentType}
+          seoTitle={seoTitle}
+          seoMetaDescription={seoMetaDescription}
+          onSeoTitleChange={setSeoTitle}
+          onSeoMetaDescriptionChange={setSeoMetaDescription}
           onAnalyze={editorAnalyze}
           onHome={reset}
         />
       );
     }
-    return <AuditView result={result} onReanalyze={() => runAudit(lastInput)} onHome={reset} />;
+    return (
+      <AuditView result={result} onReanalyze={() => runAudit(lastInput)} onRecheckMeta={recheckMeta} onHome={reset} />
+    );
   }
 
   return (

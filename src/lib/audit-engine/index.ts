@@ -100,6 +100,12 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
   const score = computeScore(freeCategories);
   const { headline, summary } = buildSummary(categories, freeCategories, score);
 
+  // Same manual-wins-over-extracted precedence used inside buildOnPageCategory,
+  // so the frontend can pre-fill an editable field with whatever was actually
+  // checked, whether that came from the live page or from what was typed in.
+  const seoTitle = options.seoTitle?.trim() || pageData?.title || null;
+  const seoMetaDescription = options.seoMetaDescription?.trim() || pageData?.metaDescription || null;
+
   return {
     url: displayUrl,
     score,
@@ -108,5 +114,7 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
     categories,
     mode,
     analyzedText: stats.normalizedText,
+    seoTitle,
+    seoMetaDescription,
   };
 }

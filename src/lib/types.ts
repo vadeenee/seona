@@ -46,4 +46,6 @@ export interface AuditResult {
   categories: AuditCategory[];
   mode: InputMode;
   analyzedText: string; // whitespace-normalized text the content checks ran on
+  seoTitle: string | null; // the title actually used for the checks (extracted or manually authored)
+  seoMetaDescription: string | null;
 }

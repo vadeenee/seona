@@ -5,6 +5,10 @@ import { AuditIssue, AuditResult, ContentType, Severity } from "@/lib/types";
 import { ScoreDisplay } from "./ScoreDisplay";
 import { CategoryCard } from "./CategoryCard";
 import { Header } from "./Header";
+import { SerpPreview } from "./SerpPreview";
+
+const fieldClass =
+  "w-full bg-[var(--surface-1)] border border-[var(--border)] rounded-lg px-3 py-2 text-[13px] outline-none transition-colors duration-150 focus:border-[var(--border-strong)] placeholder:text-[var(--text-muted)]";
 
 const dotColor: Record<Severity, string> = {
   critical: "var(--critical)",
@@ -80,12 +84,20 @@ export function EditorView({
   initialResult,
   keyword,
   contentType,
+  seoTitle,
+  seoMetaDescription,
+  onSeoTitleChange,
+  onSeoMetaDescriptionChange,
   onAnalyze,
   onHome,
 }: {
   initialResult: AuditResult;
   keyword?: string;
   contentType: ContentType;
+  seoTitle: string;
+  seoMetaDescription: string;
+  onSeoTitleChange: (value: string) => void;
+  onSeoMetaDescriptionChange: (value: string) => void;
   onAnalyze: (text: string) => Promise<AuditResult>;
   onHome?: () => void;
 }) {
@@ -254,6 +266,37 @@ export function EditorView({
                   ))}
                 </div>
               </div>
+            </div>
+
+            <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-5 py-5 mb-4 shadow-sm">
+              <h3 className="font-display text-[14px] font-extrabold tracking-tight m-0 mb-3">SEO snippet editor</h3>
+
+              <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                SEO title
+              </label>
+              <input
+                type="text"
+                value={seoTitle}
+                onChange={(e) => onSeoTitleChange(e.target.value)}
+                placeholder="What should show up as the headline in Google?"
+                className={`${fieldClass} mb-3`}
+              />
+
+              <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                Meta description
+              </label>
+              <textarea
+                value={seoMetaDescription}
+                onChange={(e) => onSeoMetaDescriptionChange(e.target.value)}
+                placeholder="The snippet Google shows under your title"
+                rows={3}
+                className={`${fieldClass} mb-4 resize-none`}
+              />
+
+              <SerpPreview title={seoTitle} description={seoMetaDescription} displayUrl="yourblog.com › post-title" />
+              <p className="text-[10.5px] text-[var(--text-muted)] mt-2 mb-0">
+                Edit these, then hit Analyze to recheck.
+              </p>
             </div>
 
             {result.categories.map((c, i) => (

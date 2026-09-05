@@ -32,7 +32,6 @@ export function buildTechnicalCategory(
       severity: "critical",
       description:
         "Without a canonical tag, search engines may index a duplicate or parameterized version of this page instead.",
-      fixLabel: "Add canonical tag",
     });
   } else {
     issues.push({
@@ -58,7 +57,6 @@ export function buildTechnicalCategory(
       severity: missingAlt.length > 2 ? "serious" : "warning",
       description:
         "Alt text helps image search, accessibility, and gives AI crawlers more context about the page.",
-      fixLabel: "Generate alt text",
     });
   } else {
     issues.push({

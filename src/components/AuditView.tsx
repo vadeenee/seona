@@ -6,6 +6,10 @@ import { ScoreDisplay } from "./ScoreDisplay";
 import { CategoryCard } from "./CategoryCard";
 import { EvidencePanel } from "./EvidencePanel";
 import { Header } from "./Header";
+import { SerpPreview } from "./SerpPreview";
+
+const fieldClass =
+  "w-full bg-[var(--surface-1)] border border-[var(--border)] rounded-lg px-3 py-2 text-[13px] outline-none transition-colors duration-150 focus:border-[var(--border-strong)] placeholder:text-[var(--text-muted)]";
 
 function severityCounts(result: AuditResult) {
   const counts: Record<Severity, number> = { critical: 0, serious: 0, warning: 0, good: 0 };
@@ -23,13 +27,28 @@ const dotColor: Record<Severity, string> = {
 export function AuditView({
   result,
   onReanalyze,
+  onRecheckMeta,
   onHome,
 }: {
   result: AuditResult;
   onReanalyze?: () => void;
+  onRecheckMeta?: (seoTitle: string, seoMetaDescription: string) => void;
   onHome?: () => void;
 }) {
   const [plan, setPlan] = useState<"free" | "pro">("free");
+  const [titleDraft, setTitleDraft] = useState(result.seoTitle ?? "");
+  const [descDraft, setDescDraft] = useState(result.seoMetaDescription ?? "");
+  // Tracks the result a fresh analysis last echoed back, so a genuinely new
+  // result (including one triggered by this editor's own "Apply & Recheck")
+  // can re-sync the drafts during render rather than in an effect — safe to
+  // overwrite here since the server echoes back exactly what was submitted.
+  const [syncedResult, setSyncedResult] = useState(result);
+  if (result !== syncedResult) {
+    setSyncedResult(result);
+    setTitleDraft(result.seoTitle ?? "");
+    setDescDraft(result.seoMetaDescription ?? "");
+  }
+
   const counts = useMemo(() => severityCounts(result), [result]);
   const lockedCount = useMemo(
     () =>
@@ -140,6 +159,42 @@ export function AuditView({
               ))}
             </div>
           </div>
+
+          {onRecheckMeta && (
+            <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-6 py-6 shadow-sm mt-4">
+              <h3 className="font-display text-[14px] font-extrabold tracking-tight m-0 mb-3">SEO snippet editor</h3>
+
+              <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                SEO title
+              </label>
+              <input
+                type="text"
+                value={titleDraft}
+                onChange={(e) => setTitleDraft(e.target.value)}
+                className={`${fieldClass} mb-3`}
+              />
+
+              <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                Meta description
+              </label>
+              <textarea
+                value={descDraft}
+                onChange={(e) => setDescDraft(e.target.value)}
+                rows={3}
+                className={`${fieldClass} mb-4 resize-none`}
+              />
+
+              <SerpPreview title={titleDraft} description={descDraft} displayUrl={result.url} />
+
+              <button
+                onClick={() => onRecheckMeta(titleDraft, descDraft)}
+                disabled={titleDraft === (result.seoTitle ?? "") && descDraft === (result.seoMetaDescription ?? "")}
+                className="w-full mt-4 bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white border-none rounded-lg px-4 py-2.5 text-[12.5px] font-bold cursor-pointer transition-all duration-200 ease-out hover:shadow-[0_4px_14px_-2px_var(--brand)] hover:-translate-y-px active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none disabled:translate-y-0 disabled:shadow-none"
+              >
+                Apply &amp; recheck
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

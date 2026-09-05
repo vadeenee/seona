@@ -17,12 +17,12 @@ export function buildOnPageCategory(
   manual?: ManualMeta,
   pageType: PageType = "blog"
 ): AuditCategory {
-  // Pasted content has no HTML to read a title/meta description from, but the
-  // user may have authored them directly in the SEO Title / Meta Description
-  // fields (Yoast-style) — use those so on-page checks still run instead of
-  // going dark just because there's no live page.
-  const title = pageData?.title ?? manual?.title?.trim() ?? null;
-  const metaDescription = pageData?.metaDescription ?? manual?.metaDescription?.trim() ?? null;
+  // The manually-authored SEO Title / Meta Description fields win whenever
+  // they're filled in — that's what lets a URL audit's title/description be
+  // edited and rechecked live, same as pasted content that has no HTML to
+  // extract them from in the first place.
+  const title = manual?.title?.trim() || pageData?.title || null;
+  const metaDescription = manual?.metaDescription?.trim() || pageData?.metaDescription || null;
 
   if (!pageData && !title && !metaDescription) {
     return {
@@ -50,7 +50,6 @@ export function buildOnPageCategory(
       title: "SEO title is missing",
       severity: "critical",
       description: "Every page needs a title. It's the headline shown in search results and browser tabs.",
-      fixLabel: "Generate title tag",
     });
   } else if (title.length > TITLE_MAX) {
     issues.push({
@@ -58,7 +57,6 @@ export function buildOnPageCategory(
       title: `SEO title is ${title.length} characters`,
       severity: "warning",
       description: `Titles over ~${TITLE_MAX} characters get truncated in search results on most devices.`,
-      fixLabel: "Shorten title",
     });
   } else if (title.length < TITLE_MIN) {
     issues.push({
@@ -66,7 +64,6 @@ export function buildOnPageCategory(
       title: `SEO title is only ${title.length} characters`,
       severity: "warning",
       description: `Titles under ~${TITLE_MIN} characters usually aren't descriptive enough and waste the space Google gives you in the result.`,
-      fixLabel: "Expand title",
     });
   } else {
     issues.push({
@@ -83,7 +80,6 @@ export function buildOnPageCategory(
       severity: "critical",
       description:
         "Google is writing its own snippet for this page, which usually lowers click-through rate from search results.",
-      fixLabel: "Generate meta description",
     });
   } else if (metaDescription.length < META_DESC_MIN || metaDescription.length > META_DESC_MAX) {
     issues.push({
@@ -91,7 +87,6 @@ export function buildOnPageCategory(
       title: `Meta description is ${metaDescription.length} characters`,
       severity: "warning",
       description: `Aim for ${META_DESC_MIN}-${META_DESC_MAX} characters so it isn't truncated or padded out by Google.`,
-      fixLabel: "Rewrite meta description",
     });
   } else {
     issues.push({
@@ -109,7 +104,6 @@ export function buildOnPageCategory(
         title: "No H1 heading found",
         severity: "critical",
         description: "Every page should have exactly one H1 that describes what the page is about.",
-        fixLabel: "Add an H1",
       });
     } else if (h1s.length > 1) {
       issues.push({
@@ -117,7 +111,6 @@ export function buildOnPageCategory(
         title: `Multiple H1 headings found (${h1s.length})`,
         severity: "warning",
         description: "Having more than one H1 can dilute the page's topical signal. Most pages should have exactly one.",
-        fixLabel: "Reduce to one H1",
       });
     } else {
       issues.push({
@@ -140,7 +133,6 @@ export function buildOnPageCategory(
               title: "SEO title doesn't include your target keyword",
               severity: "warning",
               description: `"${trimmedKeyword}" doesn't appear in the title. Titles that match the target keyword tend to earn a higher click-through rate.`,
-              fixLabel: "Update title",
             }
       );
     }
@@ -153,7 +145,6 @@ export function buildOnPageCategory(
               title: "H1 doesn't include your target keyword",
               severity: "warning",
               description: `"${trimmedKeyword}" doesn't appear in the H1. It's one of the strongest on-page signals for what a page is about.`,
-              fixLabel: "Update H1",
             }
       );
     }
@@ -166,7 +157,6 @@ export function buildOnPageCategory(
               title: "Meta description doesn't include your target keyword",
               severity: "warning",
               description: `"${trimmedKeyword}" doesn't appear in the meta description. Working it in naturally reinforces relevance and often gets bolded in search results.`,
-              fixLabel: "Rewrite meta description",
             }
       );
     }
@@ -187,7 +177,6 @@ export function buildOnPageCategory(
           severity: "warning",
           description:
             "A page this long with no H2 sections reads as one dense block. Subheadings make content scannable and easier for AI systems to extract specific sections from.",
-          fixLabel: "Add section headings",
         });
       } else {
         issues.push({
@@ -211,7 +200,6 @@ export function buildOnPageCategory(
         severity: "warning",
         description:
           "Open Graph tags control how this page looks when shared on social media, Slack, or messaging apps. Without them, shares show a blank or generic preview.",
-        fixLabel: "Generate Open Graph tags",
       });
     } else {
       issues.push({
