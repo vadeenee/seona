@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AuditIssue, AuditResult, ContentType, Severity } from "@/lib/types";
 import { nicheLabel } from "@/lib/niches";
 import { ScoreDisplay } from "./ScoreDisplay";
@@ -78,6 +78,7 @@ interface PopoverState {
   key: string;
   x: number;
   y: number;
+  range: { start: number; end: number };
   issues: Pick<AuditIssue, "title" | "description" | "fixLabel">[];
 }
 
@@ -111,6 +112,22 @@ export function EditorView({
   const [error, setError] = useState<string | null>(null);
   const [plan, setPlan] = useState<"free" | "pro">("free");
   const [popover, setPopover] = useState<PopoverState | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const pendingSelectionRef = useRef<{ start: number; end: number } | null>(null);
+
+  // The textarea only exists in the DOM once viewMode flips to "editing" —
+  // applying the selection has to wait for that render to actually commit,
+  // which a requestAnimationFrame right after setViewMode can race with.
+  useEffect(() => {
+    if (viewMode !== "editing" || !pendingSelectionRef.current) return;
+    const range = pendingSelectionRef.current;
+    pendingSelectionRef.current = null;
+    const ta = textareaRef.current;
+    if (ta) {
+      ta.focus();
+      ta.setSelectionRange(range.start, range.end);
+    }
+  }, [viewMode]);
 
   const counts = useMemo(() => severityCounts(result), [result]);
   const marks = useMemo(() => buildMarks(result), [result]);
@@ -150,7 +167,23 @@ export function EditorView({
       return;
     }
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    setPopover({ key, x: rect.left, y: rect.bottom + 6, issues: mark.issues });
+    setPopover({
+      key,
+      x: rect.left,
+      y: rect.bottom + 6,
+      range: { start: mark.start, end: mark.end },
+      issues: mark.issues,
+    });
+  }
+
+  // The real fix for a writing-quality issue (long sentence, passive voice,
+  // repeated word) is rewriting that exact text — there's no one-click
+  // automated fix to fake. This jumps straight into edit mode with the
+  // flagged span selected, instead of leaving the popover as a dead end.
+  function handleFixHere(range: { start: number; end: number }) {
+    setPopover(null);
+    pendingSelectionRef.current = range;
+    setViewMode("editing");
   }
 
   const reviewNodes: React.ReactNode[] = [];
@@ -242,6 +275,7 @@ export function EditorView({
             <div className="px-[18px] py-4">
               {viewMode === "editing" ? (
                 <textarea
+                  ref={textareaRef}
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   rows={18}
@@ -352,6 +386,12 @@ export function EditorView({
               )}
             </div>
           ))}
+          <button
+            onClick={() => handleFixHere(popover.range)}
+            className="w-full mt-3 bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white border-none rounded-lg px-3 py-2 text-[12px] font-bold cursor-pointer transition-all duration-200 ease-out hover:shadow-[0_4px_14px_-2px_var(--brand)] active:translate-y-px"
+          >
+            Fix this text →
+          </button>
         </div>
       )}
 

@@ -27,8 +27,16 @@ export interface PageData {
   openGraph: OpenGraphData;
 }
 
-// Tags whose content is never meant to be read as prose.
-const NON_CONTENT_SELECTOR = "script, style, noscript, template, nav, header, footer, form, aside, iframe, svg, button";
+// Tags whose content is never meant to be read as prose. Deliberately does
+// NOT include <header> — unlike <nav>/<footer>, which are used consistently
+// across the web, <header> is used inconsistently in the wild (page
+// builders in particular routinely wrap a whole content section, including
+// the real article body, inside one). Stripping it silently dropped entire
+// articles on at least one real site tested this session. A stray site-wide
+// header not tagged <nav> leaking a little menu text through is a far
+// cheaper mistake than losing the whole page — and stripLinkHeavyBlocks
+// below catches most of that leftover menu noise anyway.
+const NON_CONTENT_SELECTOR = "script, style, noscript, template, nav, footer, form, aside, iframe, svg, button";
 
 // A lot of real-world nav/menu clutter isn't wrapped in a semantic <nav> tag
 // at all — component-based sites routinely build a mega-menu out of plain
