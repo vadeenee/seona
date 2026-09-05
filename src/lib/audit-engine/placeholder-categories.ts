@@ -3,7 +3,7 @@ import { AuditCategory } from "@/lib/types";
 // Content Structure, Internal Linking, AEO, and Schema still need an LLM API
 // key (build priority 4 in CLAUDE.md). Until then they stay illustrative so
 // the freemium UI has something to show. Search Intent & Topical Coverage
-// graduated out of this file. It's now real, backed by live DataForSEO SERP
+// graduated out of this file. It's now real, backed by live Serper SERP
 // data (see ../checks/search-intent.ts), when a keyword + API credentials are
 // available.
 export const placeholderCategories: AuditCategory[] = [

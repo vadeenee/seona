@@ -1,5 +1,5 @@
 import { AuditCategory, AuditIssue } from "@/lib/types";
-import { fetchSerpResults, isCompetitorResearchConfigured, SerpOrganicResult } from "../dataforseo";
+import { fetchSerpResults, isCompetitorResearchConfigured, SerpOrganicResult } from "../serper";
 
 const CATEGORY_SHELL = {
   id: "intent-coverage",
@@ -38,7 +38,7 @@ function unconfigured(keyword: string): AuditCategory {
         id: "intent-unconfigured",
         title: `Competitor research for "${keyword}" isn't connected yet`,
         severity: "warning",
-        description: "This needs a DataForSEO connection on the server. Ask whoever runs this site to finish that setup.",
+        description: "This needs a Serper connection on the server. Ask whoever runs this site to finish that setup.",
       },
     ],
   };
