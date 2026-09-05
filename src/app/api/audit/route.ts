@@ -13,13 +13,14 @@ export async function POST(request: Request) {
   const pageType = PAGE_TYPES.includes(body?.pageType) ? (body.pageType as PageType) : "blog";
   const seoTitle = typeof body?.seoTitle === "string" ? body.seoTitle.trim() : undefined;
   const seoMetaDescription = typeof body?.seoMetaDescription === "string" ? body.seoMetaDescription.trim() : undefined;
+  const bodyText = typeof body?.bodyText === "string" ? body.bodyText : undefined;
 
   if (!input) {
     return NextResponse.json({ error: "Paste a URL or some content to audit." }, { status: 400 });
   }
 
   try {
-    const result = await runAudit(input, { keyword, contentType, pageType, seoTitle, seoMetaDescription });
+    const result = await runAudit(input, { keyword, contentType, pageType, seoTitle, seoMetaDescription, bodyText });
     return NextResponse.json(result);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Couldn't analyze that input.";

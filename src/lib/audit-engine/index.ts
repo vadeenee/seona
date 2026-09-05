@@ -15,6 +15,7 @@ export interface RunAuditOptions {
   pageType?: PageType;
   seoTitle?: string;
   seoMetaDescription?: string;
+  bodyText?: string; // manually-edited body content, overriding what was crawled from a URL/HTML input
 }
 
 const URL_PATTERN = /^(https?:\/\/)?[\w-]+(\.[\w-]+)+([/?#]\S*)?$/i;
@@ -86,7 +87,12 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
     displayUrl = "Pasted content";
   }
 
-  const textSource = pageData ? pageData.bodyText : input;
+  // A URL/HTML audit crawls the real body text automatically. If the user
+  // then edits that text in the canvas and rechecks, their edit wins — same
+  // manual-overrides-extracted precedence used for title/meta/keyword below
+  // — without losing the technical/canonical/OG checks, which still run off
+  // the originally-fetched `pageData`.
+  const textSource = options.bodyText?.trim() || (pageData ? pageData.bodyText : input);
   const stats = analyzeText(textSource);
 
   // A typed keyword always wins. Otherwise, if we extracted a real page

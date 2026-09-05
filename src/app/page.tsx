@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { AuditView } from "@/components/AuditView";
 import { EditorView } from "@/components/EditorView";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -18,6 +17,7 @@ interface AuditRequest {
   pageType: PageType;
   seoTitle?: string;
   seoMetaDescription?: string;
+  bodyText?: string;
 }
 
 async function requestAudit(req: AuditRequest): Promise<AuditResult> {
@@ -93,32 +93,20 @@ export default function Home() {
     runAudit(input);
   }
 
-  const editorAnalyze = useCallback((text: string) => requestAudit(buildRequest(text)), [buildRequest]);
-
-  // Distinct from the composer's own SEO fields (which usually stay empty in
-  // URL mode) — this lets the AuditView's own snippet editor override just
-  // the keyword/title/description for a real page and recheck, without
-  // touching whatever's in the composer.
-  const recheckMeta = useCallback(
-    (keywordOverride: string, seoTitleOverride: string, seoMetaDescriptionOverride: string) => {
-      setStatus("loading");
-      setError(null);
-      requestAudit({
-        ...buildRequest(lastInput),
-        keyword: keywordOverride || undefined,
-        seoTitle: seoTitleOverride || undefined,
-        seoMetaDescription: seoMetaDescriptionOverride || undefined,
-      })
-        .then((r) => {
-          setResult(r);
-          setStatus("ready");
-        })
-        .catch((err: unknown) => {
-          setError(err instanceof Error ? err.message : "Couldn't analyze that input.");
-          setStatus("error");
-        });
-    },
-    [buildRequest, lastInput]
+  // For pasted text, the edited canvas text IS the input — there's no
+  // separate source to preserve. For a URL/HTML audit, the canvas shows the
+  // real crawled body text, but re-submitting it as `input` would make the
+  // engine treat it as a fresh block of pasted text and lose the technical
+  // checks (canonical, alt text, load time, Open Graph) that only exist for
+  // a real fetched page. So the original URL stays as `input` and the edited
+  // text rides along as a `bodyText` override instead — same
+  // manual-wins-over-extracted precedence already used for title/meta/keyword.
+  const editorAnalyze = useCallback(
+    (text: string) =>
+      requestAudit(
+        result?.mode === "text" ? buildRequest(text) : { ...buildRequest(lastInput), bodyText: text }
+      ),
+    [buildRequest, lastInput, result]
   );
 
   const reset = useCallback(() => {
@@ -131,24 +119,19 @@ export default function Home() {
   const canAnalyze = Boolean(content.trim() || urlInput.trim());
 
   if (status === "ready" && result) {
-    if (result.mode === "text") {
-      return (
-        <EditorView
-          initialResult={result}
-          keyword={keyword}
-          contentType={contentType}
-          seoTitle={seoTitle}
-          seoMetaDescription={seoMetaDescription}
-          onKeywordChange={setKeyword}
-          onSeoTitleChange={setSeoTitle}
-          onSeoMetaDescriptionChange={setSeoMetaDescription}
-          onAnalyze={editorAnalyze}
-          onHome={reset}
-        />
-      );
-    }
     return (
-      <AuditView result={result} onReanalyze={() => runAudit(lastInput)} onRecheckMeta={recheckMeta} onHome={reset} />
+      <EditorView
+        initialResult={result}
+        keyword={keyword}
+        contentType={contentType}
+        seoTitle={seoTitle}
+        seoMetaDescription={seoMetaDescription}
+        onKeywordChange={setKeyword}
+        onSeoTitleChange={setSeoTitle}
+        onSeoMetaDescriptionChange={setSeoMetaDescription}
+        onAnalyze={editorAnalyze}
+        onHome={reset}
+      />
     );
   }
 

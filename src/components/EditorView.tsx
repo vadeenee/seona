@@ -114,6 +114,10 @@ export function EditorView({
 
   const counts = useMemo(() => severityCounts(result), [result]);
   const marks = useMemo(() => buildMarks(result), [result]);
+  // For a URL/HTML audit, the canvas below shows the real crawled body text
+  // — editable, same as pasted text — so the header should say what was
+  // actually analyzed instead of a generic "Editing" label.
+  const sourceLabel = result.mode === "text" ? "Editing: Pasted content" : `Analyzed: ${result.url}`;
   const lockedCount = useMemo(
     () =>
       result.categories
@@ -201,8 +205,8 @@ export function EditorView({
           {/* Editor panel */}
           <div className="flex-1 min-w-0 w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm">
             <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
-              <div className="text-[13.5px] text-[var(--text-secondary)] flex items-center gap-2">
-                <span>Editing: Pasted content</span>
+              <div className="text-[13.5px] text-[var(--text-secondary)] flex items-center gap-2 min-w-0">
+                <span className="truncate">{sourceLabel}</span>
                 {keyword && (
                   <span className="text-[10.5px] font-bold uppercase tracking-wide px-2 py-[3px] rounded-full border border-[var(--border-strong)] text-[var(--text-secondary)]">
                     Keyword: {keyword}
