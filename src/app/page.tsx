@@ -5,15 +5,25 @@ import { AuditView } from "@/components/AuditView";
 import { EditorView } from "@/components/EditorView";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { AuditResult, ContentType } from "@/lib/types";
+import { SerpPreview } from "@/components/SerpPreview";
+import { AuditResult, ContentType, PageType } from "@/lib/types";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
-async function requestAudit(input: string, keyword?: string, contentType?: ContentType): Promise<AuditResult> {
+interface AuditRequest {
+  input: string;
+  keyword?: string;
+  contentType: ContentType;
+  pageType: PageType;
+  seoTitle?: string;
+  seoMetaDescription?: string;
+}
+
+async function requestAudit(req: AuditRequest): Promise<AuditResult> {
   const res = await fetch("/api/audit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ input, keyword, contentType }),
+    body: JSON.stringify(req),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error ?? "Couldn't analyze that input.");
@@ -30,21 +40,39 @@ function EmptyStateIcon() {
   );
 }
 
+const fieldClass =
+  "w-full bg-[var(--surface-1)] border border-[var(--border)] rounded-lg px-3 py-2 text-[13px] outline-none transition-colors duration-150 focus:border-[var(--border-strong)] placeholder:text-[var(--text-muted)]";
+
 export default function Home() {
   const [content, setContent] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [keyword, setKeyword] = useState("");
   const [contentType, setContentType] = useState<ContentType>("general");
+  const [pageType, setPageType] = useState<PageType>("blog");
+  const [seoTitle, setSeoTitle] = useState("");
+  const [seoMetaDescription, setSeoMetaDescription] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<AuditResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [lastInput, setLastInput] = useState("");
 
+  const buildRequest = useCallback(
+    (input: string): AuditRequest => ({
+      input,
+      keyword: keyword.trim() || undefined,
+      contentType,
+      pageType,
+      seoTitle: seoTitle.trim() || undefined,
+      seoMetaDescription: seoMetaDescription.trim() || undefined,
+    }),
+    [keyword, contentType, pageType, seoTitle, seoMetaDescription]
+  );
+
   const runAudit = useCallback(
     (input: string) => {
       setStatus("loading");
       setError(null);
-      requestAudit(input, keyword.trim() || undefined, contentType)
+      requestAudit(buildRequest(input))
         .then((r) => {
           setResult(r);
           setLastInput(input);
@@ -55,7 +83,7 @@ export default function Home() {
           setStatus("error");
         });
     },
-    [keyword, contentType]
+    [buildRequest]
   );
 
   function handleAnalyze() {
@@ -64,10 +92,7 @@ export default function Home() {
     runAudit(input);
   }
 
-  const editorAnalyze = useCallback(
-    (text: string) => requestAudit(text, keyword.trim() || undefined, contentType),
-    [keyword, contentType]
-  );
+  const editorAnalyze = useCallback((text: string) => requestAudit(buildRequest(text)), [buildRequest]);
 
   const reset = useCallback(() => {
     setStatus("idle");
@@ -110,13 +135,16 @@ export default function Home() {
               placeholder="Or paste a URL instead..."
               className="flex-1 min-w-[200px] bg-[var(--surface-2)] border border-[var(--border)] rounded-lg px-3 py-2 text-[13px] outline-none transition-colors duration-150 focus:border-[var(--border-strong)] placeholder:text-[var(--text-muted)]"
             />
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="Target keyword (optional)"
-              className="flex-1 min-w-[180px] bg-[var(--surface-2)] border border-[var(--border)] rounded-lg px-3 py-2 text-[13px] outline-none transition-colors duration-150 focus:border-[var(--border-strong)] placeholder:text-[var(--text-muted)]"
-            />
+            <select
+              value={pageType}
+              onChange={(e) => setPageType(e.target.value as PageType)}
+              className="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg px-3 py-2 text-[13px] cursor-pointer transition-colors duration-150 hover:border-[var(--border-strong)]"
+            >
+              <option value="blog">Blog post</option>
+              <option value="landing">Landing page</option>
+              <option value="product">Product page</option>
+              <option value="other">Other</option>
+            </select>
             <select
               value={contentType}
               onChange={(e) => setContentType(e.target.value as ContentType)}
@@ -131,7 +159,7 @@ export default function Home() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Paste your content here, or start typing your draft..."
-            className="flex-1 w-full min-h-[360px] bg-transparent border-none outline-none resize-none text-[15px] leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-muted)] animate-fade-in"
+            className="flex-1 w-full min-h-[300px] bg-transparent border-none outline-none resize-none text-[15px] leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-muted)] animate-fade-in"
           />
 
           {error && <div className="text-xs text-[var(--critical)] mb-3 animate-fade-in">{error}</div>}
@@ -148,22 +176,66 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Results panel */}
-        <div className="w-full lg:w-[400px] shrink-0 border-t lg:border-t-0 lg:border-l border-[var(--border)] px-6 py-10 flex flex-col items-center justify-center text-center">
+        {/* SEO Meta panel */}
+        <div className="w-full lg:w-[380px] shrink-0 border-t lg:border-t-0 lg:border-l border-[var(--border)] px-6 py-6 overflow-y-auto">
           {status === "loading" ? (
-            <div className="flex flex-col items-center gap-3 animate-fade-in">
+            <div className="flex flex-col items-center justify-center gap-3 h-full animate-fade-in">
               <span className="w-9 h-9 rounded-full border-[3px] border-[var(--gridline)] border-t-[var(--brand)] animate-spin" />
               <div className="text-sm text-[var(--text-secondary)]">Analyzing…</div>
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-3 max-w-[260px] animate-fade-in">
-              <div className="w-12 h-12 rounded-full bg-[var(--brand-100)] flex items-center justify-center">
-                <EmptyStateIcon />
+            <div className="animate-fade-in">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[var(--brand-100)] flex items-center justify-center shrink-0">
+                  <EmptyStateIcon />
+                </div>
+                <h2 className="font-display text-[15px] font-extrabold tracking-tight m-0">SEO snippet editor</h2>
               </div>
-              <h2 className="font-display text-[16px] font-extrabold tracking-tight m-0">Nothing to show yet</h2>
-              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed m-0">
-                Paste your content or a URL, then hit Analyze to see your SEO and AI-search audit here.
+              <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mt-1 mb-5">
+                Fill these in and hit Analyze — they&rsquo;re checked for length and keyword match just like a real page&rsquo;s title and meta tags.
               </p>
+
+              <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                Focus keyword
+              </label>
+              <input
+                type="text"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="e.g. best running shoes"
+                className={`${fieldClass} mb-4`}
+              />
+
+              <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                SEO title
+              </label>
+              <input
+                type="text"
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+                placeholder="What should show up as the headline in Google?"
+                className={`${fieldClass} mb-4`}
+              />
+
+              <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                Meta description
+              </label>
+              <textarea
+                value={seoMetaDescription}
+                onChange={(e) => setSeoMetaDescription(e.target.value)}
+                placeholder="The snippet Google shows under your title"
+                rows={3}
+                className={`${fieldClass} mb-5 resize-none`}
+              />
+
+              <div className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                Google preview
+              </div>
+              <SerpPreview
+                title={seoTitle}
+                description={seoMetaDescription}
+                displayUrl={urlInput.trim() || "yourblog.com › post-title"}
+              />
             </div>
           )}
         </div>

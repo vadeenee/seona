@@ -1,8 +1,8 @@
-import { AuditCategory, AuditResult, ContentType, InputMode, Severity } from "@/lib/types";
+import { AuditCategory, AuditResult, ContentType, InputMode, PageType, Severity } from "@/lib/types";
 import { fetchPage } from "./fetch-page";
 import { parseHtml, looksLikeHtml, PageData } from "./parse-html";
 import { analyzeText } from "./text-stats";
-import { buildOnPageCategory } from "./checks/on-page";
+import { buildOnPageCategory, ManualMeta } from "./checks/on-page";
 import { buildContentQualityCategory } from "./checks/content-quality";
 import { buildTechnicalCategory } from "./checks/technical";
 import { buildSearchIntentCategory } from "./checks/search-intent";
@@ -11,6 +11,9 @@ import { placeholderCategories } from "./placeholder-categories";
 export interface RunAuditOptions {
   keyword?: string;
   contentType?: ContentType;
+  pageType?: PageType;
+  seoTitle?: string;
+  seoMetaDescription?: string;
 }
 
 const URL_PATTERN = /^(https?:\/\/)?[\w-]+(\.[\w-]+)+([/?#]\S*)?$/i;
@@ -85,8 +88,9 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
   const textSource = pageData ? pageData.bodyText : input;
   const stats = analyzeText(textSource);
 
+  const manualMeta: ManualMeta = { title: options.seoTitle, metaDescription: options.seoMetaDescription };
   const freeCategories: AuditCategory[] = [
-    buildOnPageCategory(pageData, options.keyword),
+    buildOnPageCategory(pageData, options.keyword, manualMeta, options.pageType),
     buildContentQualityCategory(stats, options.contentType, options.keyword),
     buildTechnicalCategory(pageData, loadTimeMs),
   ];

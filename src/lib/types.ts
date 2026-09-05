@@ -36,6 +36,7 @@ export interface AuditCategory {
 
 export type InputMode = "url" | "html" | "text";
 export type ContentType = "general" | "technical";
+export type PageType = "blog" | "landing" | "product" | "other";
 
 export interface AuditResult {
   url: string;
