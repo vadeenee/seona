@@ -238,9 +238,19 @@ export function EditorView({
         <div className="flex gap-6 flex-col lg:flex-row items-start">
           {/* Editor panel */}
           <div className="flex-1 min-w-0 w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm">
-            <div className="flex items-center justify-between px-[18px] py-[15px] border-b border-[var(--gridline)]">
-              <div className="text-[13.5px] text-[var(--text-secondary)] flex items-center gap-2 min-w-0">
-                <span className="truncate">{sourceLabel}</span>
+            <div className="flex items-center justify-between flex-wrap gap-2 px-[18px] py-[15px] border-b border-[var(--gridline)]">
+              <div className="text-[13.5px] text-[var(--text-secondary)] flex items-center flex-wrap gap-2 min-w-0">
+                <span className="truncate max-w-[220px]">{sourceLabel}</span>
+                {crawled && (
+                  <a
+                    href={result.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] font-semibold text-[var(--brand)] hover:underline whitespace-nowrap shrink-0"
+                  >
+                    View live page ↗
+                  </a>
+                )}
                 {keyword && (
                   <span className="text-[10.5px] font-bold uppercase tracking-wide px-2 py-[3px] rounded-full border border-[var(--border-strong)] text-[var(--text-secondary)]">
                     Keyword: {keyword}
