@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SerpPreview } from "@/components/SerpPreview";
 import { AuditResult, ContentType, PageType } from "@/lib/types";
+import { NICHES } from "@/lib/niches";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
@@ -96,14 +97,15 @@ export default function Home() {
 
   // Distinct from the composer's own SEO fields (which usually stay empty in
   // URL mode) — this lets the AuditView's own snippet editor override just
-  // the title/description for a real page and recheck, without touching
-  // whatever's in the composer.
+  // the keyword/title/description for a real page and recheck, without
+  // touching whatever's in the composer.
   const recheckMeta = useCallback(
-    (seoTitleOverride: string, seoMetaDescriptionOverride: string) => {
+    (keywordOverride: string, seoTitleOverride: string, seoMetaDescriptionOverride: string) => {
       setStatus("loading");
       setError(null);
       requestAudit({
         ...buildRequest(lastInput),
+        keyword: keywordOverride || undefined,
         seoTitle: seoTitleOverride || undefined,
         seoMetaDescription: seoMetaDescriptionOverride || undefined,
       })
@@ -133,10 +135,11 @@ export default function Home() {
       return (
         <EditorView
           initialResult={result}
-          keyword={keyword.trim() || undefined}
+          keyword={keyword}
           contentType={contentType}
           seoTitle={seoTitle}
           seoMetaDescription={seoMetaDescription}
+          onKeywordChange={setKeyword}
           onSeoTitleChange={setSeoTitle}
           onSeoMetaDescriptionChange={setSeoMetaDescription}
           onAnalyze={editorAnalyze}
@@ -181,8 +184,20 @@ export default function Home() {
               onChange={(e) => setContentType(e.target.value as ContentType)}
               className="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg px-3 py-2 text-[13px] cursor-pointer transition-colors duration-150 hover:border-[var(--border-strong)]"
             >
-              <option value="general">General audience</option>
-              <option value="technical">Technical / B2B</option>
+              <optgroup label="General">
+                {NICHES.filter((n) => n.group === "General").map((n) => (
+                  <option key={n.value} value={n.value}>
+                    {n.label}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="Niche">
+                {NICHES.filter((n) => n.group === "Niche").map((n) => (
+                  <option key={n.value} value={n.value}>
+                    {n.label}
+                  </option>
+                ))}
+              </optgroup>
             </select>
           </div>
 
@@ -222,7 +237,10 @@ export default function Home() {
                 </div>
                 <h2 className="font-display text-[15px] font-extrabold tracking-tight m-0">SEO snippet editor</h2>
               </div>
-              <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mt-1 mb-5">
+              <div className="text-[10.5px] font-bold uppercase tracking-wide text-[var(--brand)] mt-1">
+                Tuned for {NICHES.find((n) => n.value === contentType)?.label ?? "General / Lifestyle"}
+              </div>
+              <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed mt-1.5 mb-5">
                 Fill these in and hit Analyze — they&rsquo;re checked for length and keyword match just like a real page&rsquo;s title and meta tags.
               </p>
 

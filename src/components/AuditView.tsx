@@ -32,10 +32,11 @@ export function AuditView({
 }: {
   result: AuditResult;
   onReanalyze?: () => void;
-  onRecheckMeta?: (seoTitle: string, seoMetaDescription: string) => void;
+  onRecheckMeta?: (keyword: string, seoTitle: string, seoMetaDescription: string) => void;
   onHome?: () => void;
 }) {
   const [plan, setPlan] = useState<"free" | "pro">("free");
+  const [keywordDraft, setKeywordDraft] = useState(result.keyword ?? "");
   const [titleDraft, setTitleDraft] = useState(result.seoTitle ?? "");
   const [descDraft, setDescDraft] = useState(result.seoMetaDescription ?? "");
   // Tracks the result a fresh analysis last echoed back, so a genuinely new
@@ -45,6 +46,7 @@ export function AuditView({
   const [syncedResult, setSyncedResult] = useState(result);
   if (result !== syncedResult) {
     setSyncedResult(result);
+    setKeywordDraft(result.keyword ?? "");
     setTitleDraft(result.seoTitle ?? "");
     setDescDraft(result.seoMetaDescription ?? "");
   }
@@ -164,6 +166,22 @@ export function AuditView({
             <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-6 py-6 shadow-sm mt-4">
               <h3 className="font-display text-[14px] font-extrabold tracking-tight m-0 mb-3">SEO snippet editor</h3>
 
+              <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                Focus keyword
+                {result.keywordIsSuggested && keywordDraft === (result.keyword ?? "") && (
+                  <span className="normal-case font-semibold text-[10px] px-1.5 py-px rounded-full bg-[var(--brand-100)] text-[var(--brand)] tracking-normal">
+                    suggested from title
+                  </span>
+                )}
+              </label>
+              <input
+                type="text"
+                value={keywordDraft}
+                onChange={(e) => setKeywordDraft(e.target.value)}
+                placeholder="e.g. best running shoes"
+                className={`${fieldClass} mb-3`}
+              />
+
               <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
                 SEO title
               </label>
@@ -187,8 +205,12 @@ export function AuditView({
               <SerpPreview title={titleDraft} description={descDraft} displayUrl={result.url} />
 
               <button
-                onClick={() => onRecheckMeta(titleDraft, descDraft)}
-                disabled={titleDraft === (result.seoTitle ?? "") && descDraft === (result.seoMetaDescription ?? "")}
+                onClick={() => onRecheckMeta(keywordDraft, titleDraft, descDraft)}
+                disabled={
+                  keywordDraft === (result.keyword ?? "") &&
+                  titleDraft === (result.seoTitle ?? "") &&
+                  descDraft === (result.seoMetaDescription ?? "")
+                }
                 className="w-full mt-4 bg-gradient-to-br from-[var(--brand)] to-[var(--brand-2)] text-white border-none rounded-lg px-4 py-2.5 text-[12.5px] font-bold cursor-pointer transition-all duration-200 ease-out hover:shadow-[0_4px_14px_-2px_var(--brand)] hover:-translate-y-px active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none disabled:translate-y-0 disabled:shadow-none"
               >
                 Apply &amp; recheck

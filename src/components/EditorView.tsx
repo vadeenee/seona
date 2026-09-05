@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AuditIssue, AuditResult, ContentType, Severity } from "@/lib/types";
+import { nicheLabel } from "@/lib/niches";
 import { ScoreDisplay } from "./ScoreDisplay";
 import { CategoryCard } from "./CategoryCard";
 import { Header } from "./Header";
@@ -86,16 +87,18 @@ export function EditorView({
   contentType,
   seoTitle,
   seoMetaDescription,
+  onKeywordChange,
   onSeoTitleChange,
   onSeoMetaDescriptionChange,
   onAnalyze,
   onHome,
 }: {
   initialResult: AuditResult;
-  keyword?: string;
+  keyword: string;
   contentType: ContentType;
   seoTitle: string;
   seoMetaDescription: string;
+  onKeywordChange: (value: string) => void;
   onSeoTitleChange: (value: string) => void;
   onSeoMetaDescriptionChange: (value: string) => void;
   onAnalyze: (text: string) => Promise<AuditResult>;
@@ -206,7 +209,7 @@ export function EditorView({
                   </span>
                 )}
                 <span className="text-[10.5px] font-bold uppercase tracking-wide px-2 py-[3px] rounded-full border border-[var(--border-strong)] text-[var(--text-secondary)]">
-                  {contentType === "technical" ? "Technical / B2B" : "General audience"}
+                  {nicheLabel(contentType)}
                 </span>
               </div>
               {viewMode === "reviewed" ? (
@@ -270,6 +273,17 @@ export function EditorView({
 
             <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-2xl px-5 py-5 mb-4 shadow-sm">
               <h3 className="font-display text-[14px] font-extrabold tracking-tight m-0 mb-3">SEO snippet editor</h3>
+
+              <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
+                Focus keyword
+              </label>
+              <input
+                type="text"
+                value={keyword}
+                onChange={(e) => onKeywordChange(e.target.value)}
+                placeholder="e.g. best running shoes"
+                className={`${fieldClass} mb-3`}
+              />
 
               <label className="block text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mb-1.5">
                 SEO title

@@ -7,6 +7,7 @@ import { buildContentQualityCategory } from "./checks/content-quality";
 import { buildTechnicalCategory } from "./checks/technical";
 import { buildSearchIntentCategory } from "./checks/search-intent";
 import { placeholderCategories } from "./placeholder-categories";
+import { suggestKeywordFromTitle } from "./suggest-keyword";
 
 export interface RunAuditOptions {
   keyword?: string;
@@ -88,13 +89,24 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
   const textSource = pageData ? pageData.bodyText : input;
   const stats = analyzeText(textSource);
 
+  // A typed keyword always wins. Otherwise, if we extracted a real page
+  // title, suggest a likely focus keyword from it — cheap, deterministic,
+  // and clearly not real keyword research (no volume/difficulty data). The
+  // free on-page/content checks can use a suggestion right away; the paid
+  // competitor lookup below deliberately does NOT auto-run on a suggestion
+  // — it only fires once the user has typed or explicitly accepted a
+  // keyword, so a page load never silently burns a SERP API call.
+  const typedKeyword = options.keyword?.trim() || undefined;
+  const suggestedKeyword = !typedKeyword ? suggestKeywordFromTitle(pageData?.title) ?? undefined : undefined;
+  const effectiveKeyword = typedKeyword ?? suggestedKeyword;
+
   const manualMeta: ManualMeta = { title: options.seoTitle, metaDescription: options.seoMetaDescription };
   const freeCategories: AuditCategory[] = [
-    buildOnPageCategory(pageData, options.keyword, manualMeta, options.pageType),
-    buildContentQualityCategory(stats, options.contentType, options.keyword),
+    buildOnPageCategory(pageData, effectiveKeyword, manualMeta, options.pageType),
+    buildContentQualityCategory(stats, options.contentType, effectiveKeyword),
     buildTechnicalCategory(pageData, loadTimeMs),
   ];
-  const searchIntentCategory = await buildSearchIntentCategory(options.keyword, pageData?.title ?? undefined);
+  const searchIntentCategory = await buildSearchIntentCategory(typedKeyword, pageData?.title ?? undefined);
   const categories: AuditCategory[] = [...freeCategories, searchIntentCategory, ...placeholderCategories];
 
   const score = computeScore(freeCategories);
@@ -116,5 +128,7 @@ export async function runAudit(input: string, options: RunAuditOptions = {}): Pr
     analyzedText: stats.normalizedText,
     seoTitle,
     seoMetaDescription,
+    keyword: effectiveKeyword ?? null,
+    keywordIsSuggested: !typedKeyword && Boolean(suggestedKeyword),
   };
 }

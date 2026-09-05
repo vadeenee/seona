@@ -1,14 +1,31 @@
 import { AuditCategory, AuditIssue, ContentType, TextRange } from "@/lib/types";
+import { nicheLabel } from "@/lib/niches";
 import { TextStats } from "../text-stats";
 
 const MIN_WORDS_FOR_READABILITY = 250;
 
-// A technical/B2B audience is expected to tolerate denser writing than a
-// general-audience piece. Same Flesch scale, lower bar for what counts as
-// "good" or "critical".
+// Different niches carry different reasonable expectations for how dense
+// writing can be before it starts losing readers. A recipe blog should read
+// almost effortlessly; legal or finance content is allowed to sit lower on
+// the Flesch scale before it counts as "too hard" for its own audience. Same
+// 0-100 Flesch scale throughout — just a different bar per niche for what
+// counts as "good" vs. "critical."
 const FLESCH_BANDS: Record<ContentType, { good: number; warning: number }> = {
   general: { good: 60, warning: 30 },
   technical: { good: 40, warning: 20 },
+  ecommerce: { good: 55, warning: 30 },
+  health: { good: 55, warning: 30 },
+  finance: { good: 45, warning: 25 },
+  legal: { good: 35, warning: 15 },
+  food: { good: 65, warning: 35 },
+  travel: { good: 60, warning: 30 },
+  realestate: { good: 50, warning: 25 },
+  education: { good: 55, warning: 30 },
+  parenting: { good: 60, warning: 30 },
+  fitness: { good: 55, warning: 30 },
+  beauty: { good: 60, warning: 30 },
+  home: { good: 55, warning: 30 },
+  news: { good: 50, warning: 25 },
 };
 
 const MAX_HIGHLIGHTS = 25;
@@ -81,7 +98,7 @@ export function buildContentQualityCategory(
   }
 
   const band = FLESCH_BANDS[contentType];
-  const audienceNote = contentType === "technical" ? " for a technical/B2B audience" : "";
+  const audienceNote = contentType === "general" ? "" : ` for a ${nicheLabel(contentType).toLowerCase()} audience`;
   if (stats.fleschScore >= band.good) {
     issues.push({
       id: "reading-level-ok",

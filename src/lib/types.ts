@@ -35,7 +35,22 @@ export interface AuditCategory {
 }
 
 export type InputMode = "url" | "html" | "text";
-export type ContentType = "general" | "technical";
+export type ContentType =
+  | "general"
+  | "technical"
+  | "ecommerce"
+  | "health"
+  | "finance"
+  | "legal"
+  | "food"
+  | "travel"
+  | "realestate"
+  | "education"
+  | "parenting"
+  | "fitness"
+  | "beauty"
+  | "home"
+  | "news";
 export type PageType = "blog" | "landing" | "product" | "other";
 
 export interface AuditResult {
@@ -48,4 +63,6 @@ export interface AuditResult {
   analyzedText: string; // whitespace-normalized text the content checks ran on
   seoTitle: string | null; // the title actually used for the checks (extracted or manually authored)
   seoMetaDescription: string | null;
+  keyword: string | null; // the focus keyword actually used for the checks — typed, or suggested from the title
+  keywordIsSuggested: boolean; // true when `keyword` was auto-suggested rather than typed in
 }
