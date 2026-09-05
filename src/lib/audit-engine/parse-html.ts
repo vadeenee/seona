@@ -1,7 +1,5 @@
 import * as cheerio from "cheerio";
 import type { AnyNode } from "domhandler";
-import { JSDOM } from "jsdom";
-import { Readability } from "@mozilla/readability";
 
 export interface HeadingInfo {
   level: number; // 1-6
@@ -29,10 +27,26 @@ export interface PageData {
   openGraph: OpenGraphData;
 }
 
-// Tags whose content is never meant to be read as prose. Used as the
-// fallback path when Readability can't confidently find an article (landing
-// pages, product pages, anything that isn't long-form content).
+// Tags whose content is never meant to be read as prose.
 const NON_CONTENT_SELECTOR = "script, style, noscript, template, nav, header, footer, form, aside, iframe, svg, button";
+
+// A lot of real-world nav/menu clutter isn't wrapped in a semantic <nav> tag
+// at all — component-based sites routinely build a mega-menu out of plain
+// <div>s ("MoneyPilot Product All Class Actions Login Claim Now..."). A
+// block whose text is almost entirely link text, and short enough to be a
+// menu rather than an article that happens to link a lot, is a reasonable
+// sign it's navigation rather than prose — even without jsdom/Readability.
+function stripLinkHeavyBlocks($: cheerio.CheerioAPI, root: cheerio.Cheerio<AnyNode>): void {
+  root.find("div, ul, section").each((_, el) => {
+    const $el = $(el);
+    const text = $el.text().trim();
+    if (!text || text.length > 500) return;
+    const links = $el.find("a");
+    if (links.length < 4) return;
+    const linkText = links.text().trim();
+    if (linkText.length / text.length > 0.7) $el.remove();
+  });
+}
 
 // Real-world markup is routinely minified with zero whitespace between
 // adjacent tags ("<td>Fees</td><td>25%</td>" with nothing between them, or a
@@ -87,30 +101,10 @@ export function parseHtml(html: string): PageData {
     image: $('meta[property="og:image"]').attr("content")?.trim() || null,
   };
 
-  // Try to identify the actual article content the way Firefox's Reader Mode
-  // does — scoring text/link density rather than guessing at markup
-  // conventions — so a mega-menu, cookie banner, or related-posts rail built
-  // from plain <div>s (not semantic <nav>/<footer> tags the fallback below
-  // can catch) doesn't get read as part of the page's prose. Falls back to
-  // a plain tag-denylist strip of the full body for pages that aren't
-  // article-shaped (landing pages, product pages) where Readability
-  // reasonably finds nothing.
-  let bodyText: string;
-  try {
-    const dom = new JSDOM(html, { url: "https://example.com/" });
-    const article = new Readability(dom.window.document).parse();
-    if (article?.content && (article.textContent?.trim().length ?? 0) > 200) {
-      const $article = cheerio.load(article.content);
-      $article("script, style, noscript, iframe, svg, form, button").remove();
-      bodyText = flattenToText($article, $article.root());
-    } else {
-      throw new Error("Readability found nothing substantial");
-    }
-  } catch {
-    const bodyClone = $("body").clone();
-    bodyClone.find(NON_CONTENT_SELECTOR).remove();
-    bodyText = flattenToText($, bodyClone);
-  }
+  const bodyClone = $("body").clone();
+  bodyClone.find(NON_CONTENT_SELECTOR).remove();
+  stripLinkHeavyBlocks($, bodyClone);
+  const bodyText = flattenToText($, bodyClone);
 
   return {
     title: title || openGraph.title,
